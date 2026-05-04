@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Program — LifeUnlocked</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.phase-detail{background:#fff;border:1px solid var(--b1);border-radius:20px;padding:32px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:all .3s}
+.phase-detail:hover{box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.ph-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px}
+.ph-num-badge{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;border-radius:20px;white-space:nowrap}
+.ph-ico{font-size:36px;animation:float 4s ease-in-out infinite}
+.ph-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--tx);letter-spacing:-.5px;margin-bottom:6px}
+.ph-timeline{font-size:13px;font-weight:600}
+.ph-desc{font-size:15px;color:var(--mu);line-height:1.75;margin-bottom:20px}
+.ph-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.ph-step{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--bg2);border-radius:12px}
+.ph-step-n{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;min-width:26px;font-family:'Syne',sans-serif;color:#fff}
+.ph-step-t{font-size:13px;color:var(--tx);line-height:1.5;font-weight:500}
+.ph-goal{border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ph-goal-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.ph-goal-v{font-family:'Syne',sans-serif;font-size:14px;font-weight:800}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:28px}
+.tool-mini{background:#fff;border:1px solid var(--b1);border-radius:12px;padding:14px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tool-mini-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;min-width:36px}
+.tool-mini-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--tx)}
+.tool-mini-sub{font-size:11px;color:var(--mu);margin-top:1px}
+.fam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:28px}
+.fam-card{background:#fff;border:1px solid var(--b1);border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:all .3s}
+.fam-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-3px)}
+.fam-ico{font-size:32px;margin-bottom:12px}
+.fam-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--tx);margin-bottom:8px;letter-spacing:-.3px}
+.fam-desc{font-size:13px;color:var(--mu);line-height:1.65;margin-bottom:14px}
+.fam-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);margin-bottom:6px}
+.fam-check{color:var(--te);font-weight:700}
+</style>
+</head>
+<body>
+<div class="auth-overlay" id="auth-overlay"><div class="auth-box" id="auth-box"><div class="auth-header"><div class="auth-logo">🔓 <strong>Life</strong><span style="color:var(--or)">Unlocked</span></div><button class="auth-close" onclick="closeAuth()">✕</button></div><div class="auth-tabs"><button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button><button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create Account</button></div><div id="auth-form-area"></div></div></div>
+<nav id="main-nav"><div class="nav-logo" onclick="window.location='index.html'"><div class="nav-logo-mark">🔓</div><div><span class="nav-life">Life</span><span class="nav-ul">Unlocked</span></div></div><div class="nav-links"><a href="program.html" class="active">Program</a><a href="destinations.html">Destinations</a><a href="income.html">Income & AI</a><a href="visa.html">Visa</a><a href="support.html">Support</a><a href="index.html#pricing">Pricing</a></div><div class="nav-right"><div class="nav-search-btn" onclick="toggleSearch()">🔍 <span id="ns-txt">Search...</span></div><button class="nav-login-btn" onclick="openAuth('signin')" id="nav-login-btn">Log in</button><button class="nav-cta-btn" onclick="openAuth('signup')">Start Free →</button></div><button class="nav-mobile-menu" onclick="toggleMobileNav()">☰</button></nav>
+<div class="mobile-nav" id="mobile-nav"><a href="program.html">📋 The Program</a><a href="destinations.html">🌍 Destinations</a><a href="income.html">💰 Income & AI</a><a href="visa.html">📋 Visa Checker</a><a href="support.html">💬 Support</a><a href="index.html#pricing">💎 Pricing</a></div>
+<div class="search-bar-wrap" id="search-bar-wrap"><div class="search-bar-inner"><span>🔍</span><input class="search-bar-input" id="search-input" placeholder="Search..." oninput="runSearch(this.value)"><button onclick="toggleSearch()" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:16px">✕</button></div><div class="search-results" id="search-results"></div></div>
+
+<div class="page-hero"><div class="page-hero-inner"><div class="page-hero-label">📋 The Complete Program</div><h1 class="page-hero-h1">From <span class="grad-or">$0 to immigration</span><br>in 4 phases</h1><p class="page-hero-sub">The only program that takes you from zero income to living in your dream country — with full support at every stage. No shortcuts. No false promises. Just a real plan that works.</p></div></div>
+
+<div class="section-wrap alt">
+<div class="section">
+
+<div class="phase-detail" id="phase1">
+  <div class="ph-header">
+    <div><span class="ph-num-badge" style="background:rgba(0,200,150,.1);color:var(--te)">Phase 01</span></div>
+    <span class="ph-ico">🌱</span>
+    <div><div class="ph-title">Build Your First Income</div><div class="ph-timeline" style="color:var(--te)">Timeline: 0–3 months · Goal: $500–1,000/month</div></div>
+  </div>
+  <p class="ph-desc">You start from zero — no experience, no clients, no savings in this account. We show you exactly which skill fits your profile, where to offer it, and how to get your first paid client within the first 2 weeks. Step by step, nothing skipped.</p>
+  <div class="ph-steps">
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--te)">1</div><div class="ph-step-t">Choose your income source based on your skills and available hours (quiz result guides this choice)</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--te)">2</div><div class="ph-step-t">Learn the tool: CapCut for video editing, Canva for design, or Claude AI for writing — all free, learn in 30 days</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--te)">3</div><div class="ph-step-t">Create your profile on ComeUp (French market) and/or Fiverr (international) with a professional bio and portfolio</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--te)">4</div><div class="ph-step-t">Offer your service for free to 3 people in your network to collect reviews and build your portfolio</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--te)">5</div><div class="ph-step-t">Get first paying client · Deliver exceptional quality · Request a 5-star review · Repeat and raise your prices</div></div>
+  </div>
+  <div class="ph-goal" style="background:rgba(0,200,150,.07);border:1px solid rgba(0,200,150,.15)"><div class="ph-goal-t" style="color:var(--te)">Phase 1 Goal</div><div class="ph-goal-v" style="color:var(--te)">$500–1,000/month online · Stable first income</div></div>
+</div>
+
+<div class="phase-detail" id="phase2">
+  <div class="ph-header">
+    <div><span class="ph-num-badge" style="background:rgba(255,107,53,.1);color:var(--or)">Phase 02</span></div>
+    <span class="ph-ico">💰</span>
+    <div><div class="ph-title">Scale to a Stable Salary</div><div class="ph-timeline" style="color:var(--or)">Timeline: 3–9 months · Goal: $2,000–5,000/month</div></div>
+  </div>
+  <p class="ph-desc">You have your first income. Now we help you multiply it — more clients, better prices, automated workflow, and a second income source. This is where most people give up. We won't let you.</p>
+  <div class="ph-steps">
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--or)">1</div><div class="ph-step-t">Raise your prices by 30% after your first 10 positive reviews — you've earned it</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--or)">2</div><div class="ph-step-t">Add Upwork or Malt to reach European clients who pay 2–3x more than local markets</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--or)">3</div><div class="ph-step-t">Start a second income stream: if you do design, add social media management; if video editing, start a faceless YouTube channel</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--or)">4</div><div class="ph-step-t">Use AI tools (Claude, ChatGPT, Canva AI) to deliver faster and take more clients at the same time</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--or)">5</div><div class="ph-step-t">Set up Payoneer + Wise to receive income internationally without restrictions · Build your runway to 3 months of expenses saved</div></div>
+  </div>
+  <div class="ph-goal" style="background:rgba(255,107,53,.07);border:1px solid rgba(255,107,53,.15)"><div class="ph-goal-t" style="color:var(--or)">Phase 2 Goal</div><div class="ph-goal-v" style="color:var(--or)">$2,000–5,000/month · Consistent and growing</div></div>
+</div>
+
+<div class="phase-detail" id="phase3">
+  <div class="ph-header">
+    <div><span class="ph-num-badge" style="background:rgba(124,58,237,.1);color:var(--pu)">Phase 03</span></div>
+    <span class="ph-ico">📋</span>
+    <div><div class="ph-title">Prepare Your Immigration</div><div class="ph-timeline" style="color:var(--pu)">Timeline: 6–12 months · Goal: Visa approved + move date set</div></div>
+  </div>
+  <p class="ph-desc">You have the income. Now it's time to prepare the move — legally, logistically, and financially. We handle the complexity so you don't make expensive mistakes.</p>
+  <div class="ph-steps">
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pu)">1</div><div class="ph-step-t">Choose your destination based on your passport, income level, and lifestyle preferences (our visa checker guides this)</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pu)">2</div><div class="ph-step-t">Prepare visa documents: bank statements, school/gym enrollment letter, accommodation proof — start 4 months before planned move</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pu)">3</div><div class="ph-step-t">Set up international banking: Wise account, Payoneer, and research local bank options in your destination country</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pu)">4</div><div class="ph-step-t">Research housing: Facebook groups for expats, Airbnb for first month, then negotiate long-term locally</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pu)">5</div><div class="ph-step-t">Get international health insurance (SafetyWing from $45/month) · Buy your flight ticket 3–4 months in advance for the best price</div></div>
+  </div>
+  <div class="ph-goal" style="background:rgba(124,58,237,.07);border:1px solid rgba(124,58,237,.15)"><div class="ph-goal-t" style="color:var(--pu)">Phase 3 Goal</div><div class="ph-goal-v" style="color:var(--pu)">Visa in hand · Flight booked · Housing arranged</div></div>
+</div>
+
+<div class="phase-detail" id="phase4">
+  <div class="ph-header">
+    <div><span class="ph-num-badge" style="background:rgba(244,63,94,.1);color:var(--pk)">Phase 04</span></div>
+    <span class="ph-ico">✈️</span>
+    <div><div class="ph-title">Land & Install</div><div class="ph-timeline" style="color:var(--pk)">Timeline: 12–18 months · Goal: Fully installed in your dream country</div></div>
+  </div>
+  <p class="ph-desc">You arrive. And you're not alone. We help you navigate the first weeks, find your community, set up your finances, and start actually living the life you worked for — not just surviving in a new place.</p>
+  <div class="ph-steps">
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pk)">1</div><div class="ph-step-t">First week: Airbnb or short-term rental while you explore neighborhoods · Don't sign a long-term lease before seeing in person</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pk)">2</div><div class="ph-step-t">Open a local bank account within the first week (Bangkok Bank, Kasikorn, or CIMB depending on destination)</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pk)">3</div><div class="ph-step-t">Get a local SIM card with good data plan · Set up your co-working space access · Test your internet setup</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pk)">4</div><div class="ph-step-t">Join local expat groups on Facebook, Meetup, and Telegram · Find your community within the first 2 weeks</div></div>
+    <div class="ph-step"><div class="ph-step-n" style="background:var(--pk)">5</div><div class="ph-step-t">Continue working, growing income, exploring your new home · You made it. This is the beginning, not the end.</div></div>
+  </div>
+  <div class="ph-goal" style="background:rgba(244,63,94,.07);border:1px solid rgba(244,63,94,.15)"><div class="ph-goal-t" style="color:var(--pk)">Phase 4 Goal</div><div class="ph-goal-v" style="color:var(--pk)">Installed · Earning · Living the dream 🌴</div></div>
+</div>
+
+</div>
+</div>
+
+<div class="section-wrap">
+<div class="section section-center">
+<div class="sec-tag st-pu"><div class="sec-tag-dot"></div><span class="sec-tag-txt">Essential Tools</span></div>
+<h2 class="sec-heading">Tools you'll use <span class="grad-pu">every day</span></h2>
+<p class="sec-sub c">Every tool in the program is free or freemium. We never recommend expensive software. Full tutorials included.</p>
+<div class="tools-grid">
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#f3e6f9">🤖</div><div><div class="tool-mini-name">Claude AI</div><div class="tool-mini-sub">Writing & planning — Free</div></div></div>
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#e6f0f9">💬</div><div><div class="tool-mini-name">ChatGPT</div><div class="tool-mini-sub">Quick tasks & ideas — Free</div></div></div>
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#fce8f3">🎨</div><div><div class="tool-mini-name">Canva AI</div><div class="tool-mini-sub">Design & visuals — Free</div></div></div>
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#e6f9f0">🎬</div><div><div class="tool-mini-name">CapCut AI</div><div class="tool-mini-sub">Video editing — Free</div></div></div>
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#fdf6e3">💼</div><div><div class="tool-mini-name">Fiverr</div><div class="tool-mini-sub">International clients — Free</div></div></div>
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#e6f9f2">💶</div><div><div class="tool-mini-name">ComeUp</div><div class="tool-mini-sub">French market — Free</div></div></div>
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#e6f0f9">💰</div><div><div class="tool-mini-name">Payoneer</div><div class="tool-mini-sub">Receive payments — Free</div></div></div>
+  <div class="tool-mini"><div class="tool-mini-ico" style="background:#f0e6f9">🏦</div><div><div class="tool-mini-name">Wise</div><div class="tool-mini-sub">Multi-currency banking — Free</div></div></div>
+</div>
+</div>
+</div>
+
+<div class="section-wrap alt" id="family">
+<div class="section">
+<div class="sec-tag st-pk"><div class="sec-tag-dot"></div><span class="sec-tag-txt">Family & Couples</span></div>
+<h2 class="sec-heading">Moving abroad <span class="grad-or">as a family?</span></h2>
+<p class="sec-sub">We have dedicated programs for every situation — couple, family with kids, or already earning and just need immigration help.</p>
+<div class="fam-grid">
+  <div class="fam-card"><div class="fam-ico">👫</div><div class="fam-title">Couples Moving Abroad</div><div class="fam-desc">Both working online or one with stable remote job? We build a plan for both of you — dual income strategies and visa options for couples.</div><div class="fam-feat"><span class="fam-check">✓</span>Joint visa planning</div><div class="fam-feat"><span class="fam-check">✓</span>Dual income strategy</div><div class="fam-feat"><span class="fam-check">✓</span>Best cities for couples</div><div class="fam-feat"><span class="fam-check">✓</span>Couples community abroad</div></div>
+  <div class="fam-card"><div class="fam-ico">👨‍👩‍👧‍👦</div><div class="fam-title">Families with Children</div><div class="fam-desc">Moving with kids requires extra planning — schools, healthcare, family-friendly neighborhoods. We cover everything for families wanting a better life abroad.</div><div class="fam-feat"><span class="fam-check">✓</span>International school guides</div><div class="fam-feat"><span class="fam-check">✓</span>Family health insurance</div><div class="fam-feat"><span class="fam-check">✓</span>Family-friendly neighborhoods</div><div class="fam-feat"><span class="fam-check">✓</span>Kids activities & community</div></div>
+  <div class="fam-card"><div class="fam-ico">🤝</div><div class="fam-title">Already Have Income</div><div class="fam-desc">Already earning online or have remote work? You don't need the income program. We provide visa guidance, installation support, and destination comparison.</div><div class="fam-feat"><span class="fam-check">✓</span>Visa fast-track service</div><div class="fam-feat"><span class="fam-check">✓</span>Housing search assistance</div><div class="fam-feat"><span class="fam-check">✓</span>Local community connections</div><div class="fam-feat"><span class="fam-check">✓</span>Bank & insurance setup</div></div>
+</div>
+</div>
+</div>
+
+<div class="section-wrap" style="text-align:center;padding:60px 0">
+<div class="section section-center" style="max-width:600px">
+<h2 class="sec-heading">Ready to start your <span class="grad-or">journey?</span></h2>
+<p class="sec-sub c" style="margin-bottom:28px">Take the free quiz and get your personalized plan in 60 seconds. No credit card needed.</p>
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+  <button class="btn-primary" onclick="openAuth('signup')">🚀 Start My Free Plan</button>
+  <button class="btn-secondary" onclick="window.location='index.html#pricing'">View Pricing →</button>
+</div>
+</div>
+</div>
+
+<footer class="main-footer"><div class="footer-inner"><div class="footer-top"><div><div class="footer-logo">🔓 <span style="color:rgba(255,255,255,.85)">Life</span><span style="color:var(--or)">Unlocked</span></div><div class="footer-tagline">Earn online. Live anywhere.<br>lifeunlocked.app</div></div><div><div class="footer-col-title">Platform</div><div class="footer-links"><a href="program.html">Program</a><a href="destinations.html">Destinations</a><a href="income.html">Income & AI</a><a href="visa.html">Visa</a><a href="support.html">Support</a></div></div><div><div class="footer-col-title">Plans</div><div class="footer-links"><a href="index.html#pricing">Free Plan</a><a href="index.html#pricing">Pro $9.99/mo</a><a href="index.html#pricing">VIP $149</a></div></div><div><div class="footer-col-title">Legal</div><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="support.html">Help</a></div></div></div><div class="footer-bottom"><span>© 2025 LifeUnlocked</span><span>EN · FR · AR · ES · TR · HI · PT · ID</span></div></div></footer>
+<script src="shared.js"></script>
+</body>
+</html>

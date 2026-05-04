@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — LifeUnlocked</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.chat-wrap{background:#fff;border:1px solid var(--b1);border-radius:20px;overflow:hidden;max-width:680px;margin:40px auto 0;box-shadow:0 8px 32px rgba(0,0,0,.08)}
+.chat-head{padding:18px 22px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:12px;background:var(--bg)}
+.chat-ava{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,var(--or),var(--pu));display:flex;align-items:center;justify-content:center;font-size:20px}
+.chat-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--tx);letter-spacing:-.3px}
+.chat-status{font-size:11px;color:var(--te);margin-top:2px;display:flex;align-items:center;gap:5px;font-weight:600}
+.online-dot{width:6px;height:6px;border-radius:50%;background:var(--te);animation:pulse 2s infinite}
+.chat-msgs{padding:20px 22px;display:flex;flex-direction:column;gap:12px;min-height:220px;max-height:360px;overflow-y:auto}
+.msg{display:flex;gap:10px;align-items:flex-start}
+.msg.user{flex-direction:row-reverse}
+.msg-ava{width:32px;height:32px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;min-width:32px}
+.msg-ava.ai{background:linear-gradient(135deg,var(--or),var(--pu))}
+.msg-ava.hu{background:var(--bg2)}
+.msg-bubble{border-radius:14px;padding:12px 16px;font-size:13px;line-height:1.6;max-width:78%}
+.msg.ai .msg-bubble{background:var(--bg2);color:var(--tx)}
+.msg.user .msg-bubble{background:var(--or);color:#fff}
+.typing{display:flex;align-items:center;gap:4px;padding:12px 16px;background:var(--bg2);border-radius:14px;max-width:80px}
+.typing span{width:7px;height:7px;border-radius:50%;background:var(--mu);animation:bounce .8s ease-in-out infinite}
+.typing span:nth-child(2){animation-delay:.15s}
+.typing span:nth-child(3){animation-delay:.3s}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.chips{padding:0 22px 14px;display:flex;gap:6px;flex-wrap:wrap}
+.chip{background:var(--bg2);border:1px solid var(--b1);color:var(--mu);padding:7px 13px;border-radius:20px;font-size:12px;cursor:pointer;transition:all .2s;font-weight:500}
+.chip:hover{border-color:var(--or);color:var(--or);background:var(--or4)}
+.chat-input-wrap{padding:14px 22px;border-top:1px solid var(--b1);display:flex;gap:8px}
+.chat-input{flex:1;background:var(--bg2);border:1px solid var(--b1);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--tx);font-family:'DM Sans',sans-serif;outline:none;transition:all .2s}
+.chat-input:focus{border-color:var(--or);background:#fff}
+.chat-input::placeholder{color:var(--fa)}
+.chat-send{background:var(--or);color:#fff;border:none;border-radius:10px;padding:12px 18px;font-size:13px;cursor:pointer;font-weight:700;font-family:'Syne',sans-serif;transition:all .2s}
+.chat-send:hover{background:var(--or2)}
+.faq-list{max-width:780px;margin:40px auto 0;display:flex;flex-direction:column;gap:8px}
+.faq-item{background:#fff;border:1px solid var(--b1);border-radius:14px;overflow:hidden;cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.faq-item:hover{border-color:var(--b2)}
+.faq-item.open{border-color:var(--or)}
+.faq-q{padding:17px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.faq-q-text{font-family:'Syne',sans-serif;font-size:14px;font-weight:700;color:var(--tx);letter-spacing:-.3px}
+.faq-arrow{color:var(--fa);transition:transform .3s}
+.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--or)}
+.faq-ans{max-height:0;overflow:hidden;transition:max-height .35s ease}
+.faq-item.open .faq-ans{max-height:250px}
+.faq-ans p{padding:0 20px 18px;font-size:13px;color:var(--mu);line-height:1.75;border-top:1px solid var(--b1)}
+.contact-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:40px}
+.contact-card{background:#fff;border:1px solid var(--b1);border-radius:16px;padding:22px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:all .3s}
+.contact-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-3px)}
+.contact-ico{font-size:32px;margin-bottom:12px}
+.contact-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--tx);margin-bottom:6px;letter-spacing:-.3px}
+.contact-sub{font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:14px}
+</style>
+</head>
+<body>
+<div class="auth-overlay" id="auth-overlay"><div class="auth-box" id="auth-box"><div class="auth-header"><div class="auth-logo">🔓 <strong>Life</strong><span style="color:var(--or)">Unlocked</span></div><button class="auth-close" onclick="closeAuth()">✕</button></div><div class="auth-tabs"><button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button><button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create Account</button></div><div id="auth-form-area"></div></div></div>
+<nav id="main-nav"><div class="nav-logo" onclick="window.location='index.html'"><div class="nav-logo-mark">🔓</div><div><span class="nav-life">Life</span><span class="nav-ul">Unlocked</span></div></div><div class="nav-links"><a href="program.html">Program</a><a href="destinations.html">Destinations</a><a href="income.html">Income & AI</a><a href="visa.html">Visa</a><a href="support.html" class="active">Support</a><a href="index.html#pricing">Pricing</a></div><div class="nav-right"><div class="nav-search-btn" onclick="toggleSearch()">🔍 <span id="ns-txt">Search...</span></div><button class="nav-login-btn" onclick="openAuth('signin')" id="nav-login-btn">Log in</button><button class="nav-cta-btn" onclick="window.location='index.html#quiz'">Start Free →</button></div><button class="nav-mobile-menu" onclick="toggleMobileNav()">☰</button></nav>
+<div class="mobile-nav" id="mobile-nav"><a href="program.html">📋 The Program</a><a href="destinations.html">🌍 Destinations</a><a href="income.html">💰 Income & AI</a><a href="visa.html">📋 Visa Checker</a><a href="support.html">💬 Support</a><a href="index.html#pricing">💎 Pricing</a></div>
+<div class="search-bar-wrap" id="search-bar-wrap"><div class="search-bar-inner"><span>🔍</span><input class="search-bar-input" id="search-input" placeholder="Search destinations, income, visa..." oninput="runSearch(this.value)"><button onclick="toggleSearch()" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:16px">✕</button></div><div class="search-results" id="search-results"></div></div>
+
+<div class="page-hero"><div class="page-hero-inner"><div class="page-hero-label">💬 Support & Help</div><h1 class="page-hero-h1">We've got your <span class="grad-or">back.</span><br>24/7. Always.</h1><p class="page-hero-sub">AI support agent Luna answers instantly. Real team for complex immigration questions. You're never alone in this process.</p></div></div>
+
+<div class="section-wrap alt">
+<div class="section section-center" style="max-width:860px">
+<div class="sec-tag st-te"><div class="sec-tag-dot"></div><span class="sec-tag-txt">AI Support Agent</span></div>
+<h2 class="sec-heading">Chat with <span class="grad-te">Luna</span> — our AI</h2>
+<p class="sec-sub c">Ask anything about visas, income sources, destinations, banking, or family immigration. Luna answers in seconds.</p>
+<div class="chat-wrap">
+  <div class="chat-head">
+    <div class="chat-ava">🤖</div>
+    <div><div class="chat-name">Luna — LifeUnlocked AI</div><div class="chat-status"><div class="online-dot"></div>Online · Replies instantly</div></div>
+  </div>
+  <div class="chat-msgs" id="chat-msgs"></div>
+  <div class="chips" id="chips"></div>
+  <div class="chat-input-wrap">
+    <input class="chat-input" id="chat-in" placeholder="Ask Luna about visas, income, destinations..." onkeydown="if(event.key==='Enter')sendMsg()">
+    <button class="chat-send" onclick="sendMsg()" type="button">Send</button>
+  </div>
+</div>
+
+<div style="margin-top:60px">
+<div class="sec-tag st-or" style="justify-content:center"><div class="sec-tag-dot"></div><span class="sec-tag-txt">FAQ</span></div>
+<h2 class="sec-heading">Frequently asked <span class="grad-or">questions</span></h2>
+<div class="faq-list" id="faq-list"></div>
+</div>
+
+<div style="margin-top:60px">
+<div class="sec-tag st-pu" style="justify-content:center"><div class="sec-tag-dot"></div><span class="sec-tag-txt">Contact Us</span></div>
+<h2 class="sec-heading">Need <span class="grad-pu">human help?</span></h2>
+<div class="contact-cards">
+  <div class="contact-card"><div class="contact-ico">📧</div><div class="contact-title">Email Support</div><div class="contact-sub">For complex visa questions, billing issues, or anything Luna can't handle.</div><button class="btn-primary" style="width:100%;justify-content:center" onclick="window.location='mailto:support@lifeunlocked.app'">support@lifeunlocked.app</button></div>
+  <div class="contact-card"><div class="contact-ico">💬</div><div class="contact-title">Telegram Community</div><div class="contact-sub">Join 5,000+ members sharing tips, visa updates, and success stories.</div><button class="btn-secondary" style="width:100%" onclick="alert('Community launching soon!')">Join Community</button></div>
+  <div class="contact-card"><div class="contact-ico">📞</div><div class="contact-title">1h Expert Call (VIP)</div><div class="contact-sub">Personal call with our immigration expert. Included in the VIP Lifetime plan.</div><button class="btn-secondary" style="width:100%" onclick="window.location='index.html#pricing'">Get VIP Plan →</button></div>
+</div>
+</div>
+</div>
+</div>
+
+<footer class="main-footer"><div class="footer-inner"><div class="footer-top"><div><div class="footer-logo">🔓 <span style="color:rgba(255,255,255,.85)">Life</span><span style="color:var(--or)">Unlocked</span></div><div class="footer-tagline">Earn online. Live anywhere.<br>lifeunlocked.app</div></div><div><div class="footer-col-title">Platform</div><div class="footer-links"><a href="program.html">Program</a><a href="destinations.html">Destinations</a><a href="income.html">Income & AI</a><a href="visa.html">Visa</a><a href="support.html">Support</a></div></div><div><div class="footer-col-title">Plans</div><div class="footer-links"><a href="index.html#pricing">Free Plan</a><a href="index.html#pricing">Pro $9.99/mo</a><a href="index.html#pricing">VIP $149</a></div></div><div><div class="footer-col-title">Legal</div><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="support.html">Help</a></div></div></div><div class="footer-bottom"><span>© 2025 LifeUnlocked</span><span>EN · FR · AR · ES · TR · HI · PT · ID</span></div></div></footer>
+
+<script src="shared.js"></script>
+<script>
+const LUNA={
+  visa:["For the Thailand DTV visa, you need 500,000 THB (~$14,000) in your bank account for 3 months + enrollment in a certified cooking school or Muay Thai gym for 6+ months. Apply on thaievisa.go.th — never from inside Thailand. Processing: 2–3 weeks. 🎯","Use our Visa Checker page to see exact requirements for your nationality. For Morocco, Algeria, Egypt: Georgia is visa-free for 1 year — the easiest first step!"],
+  income:["Fastest income to start: (1) Translation — first income in 3–7 days if you speak Arabic or French on Upwork/ProZ, (2) Virtual Assistant — no skills needed, start on Fiverr this week, (3) Video Editing with CapCut — learn in 30 days. What are your current skills? 💪","YouTube Automation (faceless): Use ElevenLabs for AI voice + Leonardo AI for images + CapCut to edit. You never appear on camera. One channel can earn $500–5,000/month after 6–12 months of growth."],
+  money:["For receiving international payments: (1) Payoneer — works perfectly with Fiverr/Upwork, (2) Wise — receive EUR/USD with low fees, (3) Don't transfer to your local bank account — keep USD/EUR until you arrive abroad. 💰","The key strategy: accumulate your earnings in USD/EUR on Payoneer or Wise. Once in your destination country, open a local bank account in the first week. Thailand, Malaysia, Georgia are all very easy."],
+  family:["For families, Malaysia and Thailand are our top recommendations — English international schools, halal food everywhere, excellent healthcare, and large expat family communities. 👨‍👩‍👧","For couples where both work online: Georgia is visa-free for 1 year at just $1,300/month total for two people living well. No visa stress, ultra-fast internet, great city life."],
+  start:["To start with $0: Create profiles on Fiverr AND ComeUp (French market). Your first service: virtual assistant or translation if you speak Arabic/French. First income possible in 7 days. 🚀","The $0 to income path: (1) Install CapCut PC + Canva + Claude AI — all free, (2) Create a Fiverr profile, (3) Offer video editing or social media posts, (4) Get your first review from a friend. This week, not someday."],
+  default:["Hi! I'm Luna, your LifeUnlocked AI assistant. I help with visas, income strategies, destinations, banking, and family planning. What's your main question today? 😊","I'm available 24/7. Ask me about the fastest income for your skills, the best destination for your passport, how to save enough to immigrate, or anything about moving abroad!"],
+};
+let msgs=[{ai:true,t:"👋 Hi! I'm Luna, your LifeUnlocked AI. I help with visas, income sources, destinations, and everything about moving abroad. What can I help you with today?"}];
+const CHIPS=["Thailand DTV visa requirements","Fastest income for beginners","Receive money internationally","Moving with family abroad","Best destination for Muslims","Start with $0 savings"];
+document.getElementById('chips').innerHTML=CHIPS.map(c=>`<div class="chip" onclick="askChip('${c}')" role="button">${c}</div>`).join('');
+function renderChat(){
+  const el=document.getElementById('chat-msgs');
+  el.innerHTML=msgs.map(m=>`<div class="msg ${m.ai?'ai':'user'}"><div class="msg-ava ${m.ai?'ai':'hu'}">${m.ai?'🤖':'👤'}</div><div class="msg-bubble">${m.t}</div></div>`).join('');
+  el.scrollTop=el.scrollHeight;
+}
+function askChip(q){const i=document.getElementById('chat-in');i.value=q;sendMsg();}
+function sendMsg(){
+  const inp=document.getElementById('chat-in');const txt=inp.value.trim();if(!txt)return;
+  msgs.push({ai:false,t:txt});inp.value='';
+  msgs.push({ai:true,t:'<div class="typing"><span></span><span></span><span></span></div>'});
+  renderChat();
+  setTimeout(()=>{
+    msgs.pop();
+    const l=txt.toLowerCase();
+    let r;
+    if(l.includes('visa')||l.includes('dtv')||l.includes('passport'))r=LUNA.visa[Math.floor(Math.random()*LUNA.visa.length)];
+    else if(l.includes('famil')||l.includes('couple')||l.includes('child'))r=LUNA.family[Math.floor(Math.random()*LUNA.family.length)];
+    else if(l.includes('income')||l.includes('earn')||l.includes('youtube')||l.includes('freelan'))r=LUNA.income[Math.floor(Math.random()*LUNA.income.length)];
+    else if(l.includes('bank')||l.includes('money')||l.includes('pay')||l.includes('wise'))r=LUNA.money[Math.floor(Math.random()*LUNA.money.length)];
+    else if(l.includes('start')||l.includes('zero')||l.includes('0'))r=LUNA.start[Math.floor(Math.random()*LUNA.start.length)];
+    else r=LUNA.default[Math.floor(Math.random()*LUNA.default.length)];
+    msgs.push({ai:true,t:r});renderChat();
+  },1000);
+}
+renderChat();
+
+const FAQS=[
+  {q:"Do I need money to start?",a:"No. The Free plan is 100% free. For online income, you need $0 to start on ComeUp, Fiverr, or Upwork. Your phone or laptop is all you need to begin. We show you exactly how to get your first client within the first 2 weeks."},
+  {q:"I speak Arabic and French — is that an advantage?",a:"Absolutely yes — a massive one. Arabic↔English and French↔English translators earn $0.08–0.20 per word with immediate demand on Upwork and ProZ. Arabic community managers are extremely sought after globally. Your languages are worth more than most technical skills when starting out."},
+  {q:"What if my country has banking transfer restrictions?",a:"Use Payoneer or Wise to receive international payments. Never transfer to your local bank account if there are currency restrictions — keep funds in USD/EUR. Once in your destination country, open a local bank account in the first week. Thailand, Malaysia, and Georgia are all very easy for this."},
+  {q:"How long until I can actually leave?",a:"Realistically: 10–24 months depending on hours/day worked, starting budget, and chosen income source. Most members working 3–4h/day reach $1,000+/month in 5–8 months of consistent effort. After that, immigration preparation takes 3–6 months."},
+  {q:"Is the Thailand DTV visa accessible for Moroccans and Algerians?",a:"Yes, but it requires planning. You need 500,000 THB (~$14,000) in your bank account for 3 months + enrollment in a certified cooking school for 6+ months. Alternatively: Georgia is 100% visa-free for 1 year for both Moroccan and Algerian passports — a much easier starting point that we recommend to most North African members."},
+  {q:"Can I bring my family?",a:"Yes! We have dedicated programs for couples and families with children. Malaysia and Thailand are our top recommendations for families — English international schools, halal food everywhere, excellent and affordable healthcare, and large, welcoming expat family communities."},
+  {q:"Is there a refund guarantee?",a:"Yes — 7-day full refund guarantee, no questions asked. Contact us at support@lifeunlocked.app within 7 days of any paid purchase and we'll refund you completely. We stand behind our program."},
+  {q:"I have zero skills — can I really do this?",a:"Yes — this is exactly who LifeUnlocked was built for. Virtual assistant and translation require zero prior skills. CapCut video editing can be learned in 30 days with free YouTube tutorials. We have members with zero experience who reached $1,000+/month within 4–6 months of consistent work."},
+  {q:"What makes LifeUnlocked different from other programs?",a:"Three things: (1) We don't just teach skills — we give you a complete step-by-step program from $0 to immigration. (2) We adapt everything to your nationality — visa requirements, banking options, halal destinations. (3) We support you until you're actually settled abroad, not just until you buy the course."},
+];
+document.getElementById('faq-list').innerHTML=FAQS.map((f,i)=>`
+  <div class="faq-item" id="fq${i}">
+    <div class="faq-q" onclick="toggleFaq(${i})"><div class="faq-q-text">${f.q}</div><span class="faq-arrow">▼</span></div>
+    <div class="faq-ans"><p>${f.a}</p></div>
+  </div>`).join('');
+function toggleFaq(i){
+  const el=document.getElementById('fq'+i);
+  const open=el.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(e=>e.classList.remove('open'));
+  if(!open) el.classList.add('open');
+}
+</script>
+</body>
+</html>

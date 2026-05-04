@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Destinations — LifeUnlocked</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.dest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:18px;margin-top:40px}
+.dc{background:#fff;border:1px solid var(--b1);border-radius:18px;overflow:hidden;cursor:pointer;transition:all .3s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.dc:hover{box-shadow:0 12px 36px rgba(0,0,0,.1);transform:translateY(-6px)}
+.dc-img{height:160px;display:flex;align-items:flex-end;padding:16px;position:relative;overflow:hidden}
+.dc-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.65) 0%,rgba(0,0,0,.1) 60%,transparent 100%)}
+.dc-flag{position:absolute;right:14px;top:14px;font-size:32px;z-index:2;filter:drop-shadow(0 2px 4px rgba(0,0,0,.3))}
+.dc-content{position:relative;z-index:2}
+.dc-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#fff;letter-spacing:-.5px;line-height:1}
+.dc-city{font-size:11px;color:rgba(255,255,255,.7);margin-top:3px;font-weight:500}
+.dc-body{padding:16px}
+.dc-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--b1);font-size:13px}
+.dc-row:last-of-type{border:none;padding-bottom:0}
+.dc-l{color:var(--mu);font-weight:500}.dc-r{color:var(--tx);font-weight:600}
+.dc-r.easy{color:var(--te)}.dc-r.hal{color:var(--or)}
+.dc-tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:10px}
+.dtag{font-size:11px;padding:4px 9px;border-radius:20px;font-weight:600}
+.filter-bar{display:flex;gap:8px;flex-wrap:wrap;margin-top:24px}
+.filter-btn{background:#fff;border:1.5px solid var(--b1);border-radius:20px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s;color:var(--mu)}
+.filter-btn:hover,.filter-btn.active{border-color:var(--or);color:var(--or);background:var(--or4)}
+.modal-overlay{position:fixed;inset:0;background:rgba(15,15,26,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal-box{background:#fff;border-radius:22px;max-width:560px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.15)}
+.modal-head{padding:20px 24px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:800;color:var(--tx);letter-spacing:-.4px}
+.modal-close{background:var(--bg2);border:none;color:var(--mu);width:32px;height:32px;border-radius:8px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center}
+.modal-body{padding:22px 24px}
+.life-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:16px 0}
+.life-item{background:var(--bg2);border-radius:10px;padding:12px}
+.life-key{font-size:10px;color:var(--fa);text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:4px;font-family:'Syne',sans-serif}
+.life-val{font-family:'Syne',sans-serif;font-size:13px;font-weight:800;color:var(--tx)}
+</style>
+</head>
+<body>
+<div class="auth-overlay" id="auth-overlay"><div class="auth-box" id="auth-box"><div class="auth-header"><div class="auth-logo">🔓 <strong>Life</strong><span style="color:var(--or)">Unlocked</span></div><button class="auth-close" onclick="closeAuth()">✕</button></div><div class="auth-tabs"><button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')">Sign In</button><button class="auth-tab" id="tab-signup" onclick="switchTab('signup')">Create Account</button></div><div id="auth-form-area"></div></div></div>
+<nav id="main-nav"><div class="nav-logo" onclick="window.location='index.html'"><div class="nav-logo-mark">🔓</div><div><span class="nav-life">Life</span><span class="nav-ul">Unlocked</span></div></div><div class="nav-links"><a href="program.html">Program</a><a href="destinations.html" class="active">Destinations</a><a href="income.html">Income & AI</a><a href="visa.html">Visa</a><a href="support.html">Support</a><a href="index.html#pricing">Pricing</a></div><div class="nav-right"><div class="nav-search-btn" onclick="toggleSearch()">🔍 <span id="ns-txt">Search...</span></div><button class="nav-login-btn" onclick="openAuth('signin')" id="nav-login-btn">Log in</button><button class="nav-cta-btn" onclick="window.location='index.html#quiz'">Start Free →</button></div><button class="nav-mobile-menu" onclick="toggleMobileNav()">☰</button></nav>
+<div class="mobile-nav" id="mobile-nav"><a href="program.html">📋 The Program</a><a href="destinations.html">🌍 Destinations</a><a href="income.html">💰 Income & AI</a><a href="visa.html">📋 Visa Checker</a><a href="support.html">💬 Support</a><a href="index.html#pricing">💎 Pricing</a></div>
+<div class="search-bar-wrap" id="search-bar-wrap"><div class="search-bar-inner"><span>🔍</span><input class="search-bar-input" id="search-input" placeholder="Search destinations, income, visa..." oninput="runSearch(this.value)" onkeydown="if(event.key==='Escape')toggleSearch()"><button onclick="toggleSearch()" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:16px">✕</button></div><div class="search-results" id="search-results"></div></div>
+
+<div class="page-hero"><div class="page-hero-inner"><div class="page-hero-label">🌍 Destinations</div><h1 class="page-hero-h1">14 countries. <span class="grad-te">Endless freedom.</span></h1><p class="page-hero-sub">Full lifestyle guides, visa requirements, halal options, co-working spaces, and cost of living for every destination. Click any country to explore.</p>
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterDest('all',this)">All Destinations</button>
+  <button class="filter-btn" onclick="filterDest('asia',this)">🌏 Asia</button>
+  <button class="filter-btn" onclick="filterDest('europe',this)">🇪🇺 Europe</button>
+  <button class="filter-btn" onclick="filterDest('latam',this)">🌎 Latin America</button>
+  <button class="filter-btn" onclick="filterDest('halal',this)">🕌 Halal-Friendly</button>
+  <button class="filter-btn" onclick="filterDest('cheap',this)">💰 Under $900/mo</button>
+  <button class="filter-btn" onclick="filterDest('easy',this)">✅ Easy Visa</button>
+</div>
+</div></div>
+
+<div class="section-wrap alt">
+<div class="section">
+<div class="dest-grid" id="dest-grid"></div>
+</div>
+</div>
+
+<div class="modal-overlay" id="dest-modal" onclick="if(event.target===this)closeDestModal()">
+<div class="modal-box">
+<div class="modal-head"><div class="modal-title" id="modal-title"></div><button class="modal-close" onclick="closeDestModal()">✕</button></div>
+<div class="modal-body" id="modal-body"></div>
+</div>
+</div>
+
+<footer class="main-footer"><div class="footer-inner"><div class="footer-top"><div><div class="footer-logo">🔓 <span style="color:rgba(255,255,255,.85)">Life</span><span style="color:var(--or)">Unlocked</span></div><div class="footer-tagline">Earn online. Live anywhere.<br>lifeunlocked.app</div></div><div><div class="footer-col-title">Platform</div><div class="footer-links"><a href="program.html">Program</a><a href="destinations.html">Destinations</a><a href="income.html">Income & AI</a><a href="visa.html">Visa</a><a href="support.html">Support</a></div></div><div><div class="footer-col-title">Plans</div><div class="footer-links"><a href="index.html#pricing">Free Plan</a><a href="index.html#pricing">Pro $9.99/mo</a><a href="index.html#pricing">VIP $149</a></div></div><div><div class="footer-col-title">Legal</div><div class="footer-links"><a href="#">Privacy</a><a href="#">Terms</a><a href="support.html">Help</a></div></div></div><div class="footer-bottom"><span>© 2025 LifeUnlocked</span><span>EN · FR · AR · ES · TR · HI · PT · ID</span></div></div></footer>
+
+<script src="shared.js"></script>
+<script>
+const DESTS=[
+  {id:'thailand',n:'Thailand',city:'Chiang Mai · Bangkok · Phuket',flag:'🇹🇭',bg:'linear-gradient(135deg,#0d4f35,#1a7a52)',cost:'$700–$1,400',visa:'DTV 5-year',diff:'Easy',halal:'Yes ✓',region:'asia',minCost:700,tags:[{t:'#1 Nomad Destination',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Halal Friendly',c:'#fdf6e3',tc:'#8a5a00'},{t:'DTV 5 Years',c:'#f0e6f9',tc:'#5a0d8a'}],detail:'Thailand is the #1 destination for digital nomads in Asia. The DTV visa allows 5-year multiple-entry stays of 180 days each. Chiang Mai is the nomad capital: affordable, fast internet, co-working spaces everywhere, huge expat community. Muslim-friendly: 300+ mosques, halal restaurants everywhere.',life:{Budget:'~$900/mo',Internet:'50–200 Mbps',Halal:'Widely available','Co-working':'$80–150/mo',Mosques:'300+ in Chiang Mai',Expats:'30,000+'}},
+  {id:'bali',n:'Bali, Indonesia',city:'Canggu · Ubud · Seminyak',flag:'🇮🇩',bg:'linear-gradient(135deg,#4a1500,#8a3000)',cost:'$600–$1,200',visa:'e-Visa 60d + extend',diff:'Easy',halal:'Yes ✓',region:'asia',minCost:600,tags:[{t:'Surfer Paradise',c:'#e6f0f9',tc:'#0d4a8a'},{t:'Wellness Hub',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Muslim Country',c:'#fdf6e3',tc:'#8a5a00'}],detail:'Bali is paradise for creatives and wellness lovers. Indonesia is the world\'s largest Muslim country — halal food and mosques everywhere. Canggu has the best co-working scene in all of Asia. 25,000+ expats. Most digital nomads live very well on $800/month.',life:{Budget:'~$800/mo',Internet:'20–100 Mbps',Halal:'Abundant everywhere','Co-working':'$100–200/mo',Mosques:'Thousands',Expats:'25,000+'}},
+  {id:'vietnam',n:'Vietnam',city:'Da Nang · Hội An · Hà Nội',flag:'🇻🇳',bg:'linear-gradient(135deg,#4a0808,#8a1a1a)',cost:'$500–$1,000',visa:'e-Visa 90 days',diff:'Easy',halal:'Growing',region:'asia',minCost:500,tags:[{t:'Most Affordable',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Amazing Food',c:'#fdf6e3',tc:'#8a5a00'},{t:'Fast Growing',c:'#e6f0f9',tc:'#0d4a8a'}],detail:'Vietnam is one of the cheapest high-quality destinations in the world. Da Nang: beach + mountain + city in one place. Excellent healthcare, amazing food, welcoming people. E-visa is easy to obtain online.',life:{Budget:'~$700/mo',Internet:'30–150 Mbps',Halal:'Available in cities','Co-working':'$60–120/mo',Mosques:'Major cities',Expats:'15,000+'}},
+  {id:'georgia',n:'Georgia',city:'Tbilisi · Batumi · Kutaisi',flag:'🇬🇪',bg:'linear-gradient(135deg,#0d1a4a,#1a2d8a)',cost:'$500–$900',visa:'1 year visa-free',diff:'Very Easy',halal:'Available',region:'europe',minCost:500,tags:[{t:'1-Year Visa-Free',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Cheapest Europe',c:'#f3e6f9',tc:'#5a0d8a'},{t:'Ultra-Fast Internet',c:'#e6f0f9',tc:'#0d4a8a'}],detail:'Georgia offers 1 year visa-free for Morocco, Algeria, Egypt, Tunisia, Turkey and most African/Asian passports. Tbilisi mixes ancient history with modern nomad cafes. Very affordable. Best value in Europe. Ultra-fast internet everywhere.',life:{Budget:'~$650/mo',Internet:'50–500 Mbps',Halal:'Available','Co-working':'$60–100/mo',Mosques:'Several in Tbilisi',Expats:'20,000+'}},
+  {id:'portugal',n:'Portugal',city:'Lisbon · Porto · Algarve',flag:'🇵🇹',bg:'linear-gradient(135deg,#2d0d4a,#5a1a8a)',cost:'$1,200–$2,200',visa:'D8 Digital Nomad',diff:'Moderate',halal:'Good',region:'europe',minCost:1200,tags:[{t:'EU Gateway',c:'#e6f0f9',tc:'#0d4a8a'},{t:'English Friendly',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Great Weather',c:'#fdf6e3',tc:'#8a5a00'}],detail:'Portugal\'s D8 visa is the best in Europe for remote workers. Lisbon has incredible culture, food and nightlife. Gateway to all of Europe. Growing tech and startup scene. Best for those already earning $2,500+/month.',life:{Budget:'~$1,600/mo',Internet:'50–1000 Mbps',Halal:'Available','Co-working':'$150–300/mo',Mosques:'Several',Expats:'40,000+'}},
+  {id:'turkey',n:'Turkey',city:'Istanbul · Antalya · Bodrum',flag:'🇹🇷',bg:'linear-gradient(135deg,#4a0d0d,#8a1a1a)',cost:'$800–$1,500',visa:'e-Visa easy',diff:'Easy',halal:'Yes ✓',region:'asia',minCost:800,tags:[{t:'Muslim-Friendly',c:'#e6f9f2',tc:'#0d6e4a'},{t:'East meets West',c:'#f3e6f9',tc:'#5a0d8a'},{t:'Rich Culture',c:'#fdf6e3',tc:'#8a5a00'}],detail:'Turkey is ideal for Muslims. Istanbul bridges Europe and Asia. Antalya offers beach + city life at very affordable prices. Everything halal, mosques everywhere. Large Arab community. e-Visa is easy for most nationalities.',life:{Budget:'~$1,100/mo',Internet:'25–100 Mbps',Halal:'Everywhere','Co-working':'$80–160/mo',Mosques:'Thousands',Expats:'50,000+'}},
+  {id:'malaysia',n:'Malaysia',city:'Kuala Lumpur · Penang · Langkawi',flag:'🇲🇾',bg:'linear-gradient(135deg,#0d4a0d,#1a8a1a)',cost:'$700–$1,300',visa:'MM2H or 90-day free',diff:'Easy',halal:'Yes ✓',region:'asia',minCost:700,tags:[{t:'Muslim Country',c:'#e6f9f2',tc:'#0d6e4a'},{t:'English Everywhere',c:'#e6f0f9',tc:'#0d4a8a'},{t:'World-Class City',c:'#fdf6e3',tc:'#8a5a00'}],detail:'Malaysia is extremely underrated. KL is a world-class city with fantastic infrastructure. English is everywhere. Muslim-majority country — halal food and mosques on every corner. Great for families.',life:{Budget:'~$950/mo',Internet:'30–500 Mbps',Halal:'Everywhere','Co-working':'$80–150/mo',Mosques:'Thousands',Expats:'35,000+'}},
+  {id:'mexico',n:'Mexico',city:'Mexico City · Playa del Carmen · Oaxaca',flag:'🇲🇽',bg:'linear-gradient(135deg,#4a2d0d,#8a5a1a)',cost:'$900–$1,600',visa:'180-day tourist',diff:'Very Easy',halal:'Limited',region:'latam',minCost:900,tags:[{t:'No Visa Needed',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Beaches & Cenotes',c:'#e6f0f9',tc:'#0d4a8a'},{t:'Huge Expat Scene',c:'#f3e6f9',tc:'#5a0d8a'}],detail:'Mexico City is one of the best cities for nomads worldwide. Playa del Carmen for beach life. No visa needed for most nationalities. Great food, wild nature, vibrant culture. Spanish opens everything.',life:{Budget:'~$1,200/mo',Internet:'20–100 Mbps',Halal:'Major cities only','Co-working':'$100–200/mo',Mosques:'Few',Expats:'60,000+'}},
+  {id:'colombia',n:'Colombia',city:'Medellín · Bogotá · Cartagena',flag:'🇨🇴',bg:'linear-gradient(135deg,#0d3a0d,#1a6a1a)',cost:'$800–$1,400',visa:'90-day tourist',diff:'Easy',halal:'Limited',region:'latam',minCost:800,tags:[{t:'Eternal Spring',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Startup Hub',c:'#e6f0f9',tc:'#0d4a8a'},{t:'Incredible Nature',c:'#fdf6e3',tc:'#8a5a00'}],detail:'"City of Eternal Spring" — Medellín has perfect weather year-round. Colombia has transformed into a top nomad destination. Great coffee, incredible nature, warm people. Spanish helpful.',life:{Budget:'~$1,000/mo',Internet:'20–100 Mbps',Halal:'Very limited','Co-working':'$80–150/mo',Mosques:'Few',Expats:'30,000+'}},
+  {id:'philippines',n:'Philippines',city:'Manila · Cebu · Palawan',flag:'🇵🇭',bg:'linear-gradient(135deg,#0d0d4a,#1a1a8a)',cost:'$600–$1,100',visa:'30-day free (extendable)',diff:'Easy',halal:'Moderate',region:'asia',minCost:600,tags:[{t:'English Everywhere',c:'#e6f0f9',tc:'#0d4a8a'},{t:'7,000+ Islands',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Very Affordable',c:'#fdf6e3',tc:'#8a5a00'}],detail:'Philippines has 7,107 islands. English is the official language — no language barrier. Palawan is one of the world\'s most beautiful places. Great for divers and beach lovers.',life:{Budget:'~$750/mo',Internet:'10–50 Mbps',Halal:'South Philippines','Co-working':'$50–100/mo',Mosques:'South mainly',Expats:'20,000+'}},
+  {id:'cambodia',n:'Cambodia',city:'Phnom Penh · Siem Reap',flag:'🇰🇭',bg:'linear-gradient(135deg,#3a2d0d,#6a5a1a)',cost:'$400–$800',visa:'e-Visa 30d easy',diff:'Very Easy',halal:'Available',region:'asia',minCost:400,tags:[{t:'Most Affordable',c:'#e6f9f2',tc:'#0d6e4a'},{t:'Angkor Wat',c:'#fdf6e3',tc:'#8a5a00'},{t:'USD Economy',c:'#e6f0f9',tc:'#0d4a8a'}],detail:'Most affordable country in Asia. Dollar economy makes finances simple. Phnom Penh has a growing nomad scene. Siem Reap for the incredible Angkor Wat.',life:{Budget:'~$550/mo',Internet:'10–50 Mbps',Halal:'Available','Co-working':'$40–80/mo',Mosques:'Available',Expats:'8,000+'}},
+  {id:'brazil',n:'Brazil',city:'Florianópolis · Rio · São Paulo',flag:'🇧🇷',bg:'linear-gradient(135deg,#0a1a08,#1a3a12)',cost:'$900–$1,600',visa:'90-day tourist',diff:'Moderate',halal:'Limited',region:'latam',minCost:900,tags:[{t:'Best Beaches',c:'#e6f0f9',tc:'#0d4a8a'},{t:'Carnival Culture',c:'#fce8f3',tc:'#8a0d5a'},{t:'Huge Market',c:'#e6f9f2',tc:'#0d6e4a'}],detail:'Brazil is a continent in itself. Florianópolis is the top nomad spot with incredible beaches. Rio for culture and energy. São Paulo for business. Portuguese is useful but many speak English.',life:{Budget:'~$1,100/mo',Internet:'20–200 Mbps',Halal:'Major cities','Co-working':'$80–150/mo',Mosques:'São Paulo, Rio',Expats:'25,000+'}},
+  {id:'japan',n:'Japan',city:'Tokyo · Osaka · Kyoto',flag:'🇯🇵',bg:'linear-gradient(135deg,#3a0d1a,#6a1a35)',cost:'$1,200–$2,000',visa:'90-day tourist',diff:'Moderate',halal:'Growing fast',region:'asia',minCost:1200,tags:[{t:'Hyper Modern',c:'#e6f0f9',tc:'#0d4a8a'},{t:'Unique Culture',c:'#fce8f3',tc:'#8a0d5a'},{t:'Ultra Safe',c:'#e6f9f2',tc:'#0d6e4a'}],detail:'Japan is an unforgettable experience. Ultra-safe, incredibly organized, unique culture. Halal options growing rapidly. Best for those earning $2,500+/month in USD/EUR. Tokyo is one of the most exciting cities on earth.',life:{Budget:'~$1,600/mo',Internet:'100–1000 Mbps',Halal:'Growing rapidly','Co-working':'$150–300/mo',Mosques:'Major cities',Expats:'30,000+'}},
+  {id:'greece',n:'Greece',city:'Athens · Santorini · Crete',flag:'🇬🇷',bg:'linear-gradient(135deg,#080e1a,#10208a)',cost:'$1,000–$1,800',visa:'EU Digital Nomad',diff:'Moderate',halal:'Available',region:'europe',minCost:1000,tags:[{t:'Mediterranean Life',c:'#e6f0f9',tc:'#0d4a8a'},{t:'Island Hopping',c:'#fce8f3',tc:'#8a0d5a'},{t:'EU Access',c:'#e6f9f2',tc:'#0d6e4a'}],detail:'Greece digital nomad visa is one of the easiest in the EU. Mediterranean diet, ancient history, stunning islands. Athens has a growing nomad community. Island hopping is a unique experience.',life:{Budget:'~$1,400/mo',Internet:'20–200 Mbps',Halal:'Available','Co-working':'$100–200/mo',Mosques:'Athens',Expats:'20,000+'}},
+];
+
+let currentFilter='all';
+
+function renderDests(filter){
+  let filtered=DESTS;
+  if(filter==='asia') filtered=DESTS.filter(d=>d.region==='asia');
+  else if(filter==='europe') filtered=DESTS.filter(d=>d.region==='europe');
+  else if(filter==='latam') filtered=DESTS.filter(d=>d.region==='latam');
+  else if(filter==='halal') filtered=DESTS.filter(d=>d.halal.includes('Yes'));
+  else if(filter==='cheap') filtered=DESTS.filter(d=>d.minCost<900);
+  else if(filter==='easy') filtered=DESTS.filter(d=>d.diff==='Easy'||d.diff==='Very Easy');
+  document.getElementById('dest-grid').innerHTML=filtered.map((d,i)=>`
+    <div class="dc" onclick="openDestModal(${DESTS.indexOf(d)})" id="dest-${d.id}">
+      <div class="dc-img" style="background:${d.bg}">
+        <div class="dc-overlay"></div>
+        <div class="dc-flag">${d.flag}</div>
+        <div class="dc-content"><div class="dc-name">${d.n}</div><div class="dc-city">${d.city}</div></div>
+      </div>
+      <div class="dc-body">
+        <div class="dc-row"><span class="dc-l">Monthly cost</span><span class="dc-r">${d.cost}</span></div>
+        <div class="dc-row"><span class="dc-l">Visa type</span><span class="dc-r">${d.visa}</span></div>
+        <div class="dc-row"><span class="dc-l">Access level</span><span class="dc-r easy">${d.diff}</span></div>
+        <div class="dc-row"><span class="dc-l">Halal food</span><span class="dc-r hal">${d.halal}</span></div>
+        <div class="dc-tags">${d.tags.map(t=>`<span class="dtag" style="background:${t.c};color:${t.tc}">${t.t}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
+}
+
+function filterDest(f,btn){
+  currentFilter=f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderDests(f);
+}
+
+function openDestModal(i){
+  const d=DESTS[i];
+  document.getElementById('modal-title').textContent=d.flag+' '+d.n+' — Complete Guide';
+  document.getElementById('modal-body').innerHTML=`
+    <p style="font-size:14px;color:var(--mu);line-height:1.75;margin-bottom:20px">${d.detail}</p>
+    <div class="life-grid">${Object.entries(d.life).map(([k,v])=>`<div class="life-item"><div class="life-key">${k}</div><div class="life-val">${v}</div></div>`).join('')}</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px">${d.tags.map(t=>`<span style="font-size:12px;padding:4px 10px;border-radius:20px;font-weight:600;background:${t.c};color:${t.tc}">${t.t}</span>`).join('')}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:20px">
+      <div class="life-item"><div class="life-key">Monthly cost</div><div class="life-val">${d.cost}</div></div>
+      <div class="life-item"><div class="life-key">Visa type</div><div class="life-val">${d.visa}</div></div>
+    </div>
+    <button class="btn-primary" style="width:100%;justify-content:center" onclick="closeDestModal();window.location='visa.html'">Check My Visa Requirements →</button>
+    <button class="btn-secondary" style="width:100%;margin-top:8px" onclick="closeDestModal();window.location='index.html#quiz'">Plan My Move to ${d.n}</button>
+  `;
+  document.getElementById('dest-modal').classList.add('open');
+}
+function closeDestModal(){document.getElementById('dest-modal').classList.remove('open')}
+
+renderDests('all');
+
+// Check if URL has hash for specific destination
+const hash=window.location.hash.replace('#','');
+if(hash){const idx=DESTS.findIndex(d=>d.id===hash);if(idx>=0){setTimeout(()=>openDestModal(idx),500);}}
+</script>
+</body>
+</html>
