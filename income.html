@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Income & AI Tools — LifeUnlocked</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.tab-bar{display:flex;gap:0;background:var(--bg2);border-radius:12px;padding:4px;margin-bottom:32px;max-width:400px}
+.tab-btn{flex:1;padding:10px;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;color:var(--mu);background:transparent}
+.tab-btn.active{background:#fff;color:var(--tx);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.income-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}
+.ic{background:#fff;border:1px solid var(--b1);border-radius:16px;padding:20px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.ic:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-4px)}
+.ic-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ic-ico{width:42px;height:42px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;min-width:42px;border:1px solid var(--b1)}
+.ic-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--tx)}
+.ic-sp{font-size:11px;color:var(--mu);margin-top:2px}
+.ic-desc{font-size:13px;color:var(--mu);line-height:1.6;margin-bottom:12px}
+.ic-bot{display:flex;align-items:center;justify-content:space-between}
+.ic-r{font-family:'Syne',sans-serif;font-weight:800;color:var(--te);font-size:13px}
+.ic-lv{font-size:10px;font-weight:700;padding:3px 8px;border-radius:20px;font-family:'Syne',sans-serif}
+.ai-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.ac{background:#fff;border:1px solid var(--b1);border-radius:16px;padding:20px;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.06);position:relative}
+.ac:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-4px)}
+.ac-badge{position:absolute;top:12px;right:12px;font-size:10px;font-weight:700;padding:3px 9px;border-radius:5px;font-family:'Syne',sans-serif}
+.ac-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+.ac-ico{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;min-width:42px;border:1px solid var(--b1)}
+.ac-name{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--tx)}
+.ac-cat{font-size:11px;color:var(--mu);margin-top:2px}
+.ac-desc{font-size:12px;color:var(--mu);line-height:1.6;margin-bottom:10px}
+.ac-earn{font-size:11px;font-weight:700;color:var(--or);background:var(--or4);padding:4px 10px;border-radius:20px;display:inline-block}
+.modal-ov{position:fixed;inset:0;background:rgba(15,15,26,.55);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
+.modal-ov.open{display:flex}
+.modal-bx{background:#fff;border-radius:22px;max-width:520px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 24px 64px rgba(0,0,0,.15)}
+.modal-hd{padding:20px 24px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:1}
+.modal-tl{font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--tx)}
+.modal-cl{background:var(--bg2);border:none;color:var(--mu);width:30px;height:30px;border-radius:8px;cursor:pointer;font-size:16px}
+.modal-bd{padding:22px 24px}
+</style>
+</head>
+<body>
+<div class="auth-overlay" id="auth-overlay"><div class="auth-box" id="auth-box"><div class="auth-header"><div class="auth-logo">🔓 <strong>Life</strong><span style="color:var(--or)">Unlocked</span></div><button class="auth-close" onclick="closeAuth()">✕</button></div><div class="auth-tabs"><button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')" data-i18n="auth_signin">Sign In</button><button class="auth-tab" id="tab-signup" onclick="switchTab('signup')" data-i18n="auth_signup">Create Account</button></div><div id="auth-form-area"></div></div></div>
+
+<nav id="main-nav">
+  <div class="nav-logo" onclick="window.location='index.html'"><div class="nav-logo-mark">🔓</div><div><span class="nav-life">Life</span><span class="nav-ul">Unlocked</span></div></div>
+  <div class="nav-links"><a href="program.html" data-i18n="nav_program">Program</a><a href="destinations.html" data-i18n="nav_destinations">Destinations</a><a href="income.html" class="active" data-i18n="nav_income">Income & AI</a><a href="visa.html" data-i18n="nav_visa">Visa</a><a href="support.html" data-i18n="nav_support">Support</a><a href="index.html#pricing" data-i18n="nav_pricing">Pricing</a></div>
+  <div class="nav-right"><div class="nav-search-btn" onclick="toggleSearch()">🔍 <span data-i18n="nav_search">Search...</span></div><button class="nav-login-btn" onclick="openAuth('signin')" id="nav-login-btn" data-i18n="nav_login">Log in</button><button class="nav-cta-btn" onclick="openAuth('signup')" data-i18n="nav_cta">Start Free →</button></div>
+  <button class="nav-mobile-menu" onclick="toggleMobileNav()">☰</button>
+</nav>
+
+<div class="mobile-nav" id="mobile-nav"><a href="program.html">📋 Program</a><a href="destinations.html">🌍 Destinations</a><a href="income.html">💰 Income & AI</a><a href="visa.html">📋 Visa</a><a href="support.html">💬 Support</a><a href="index.html#pricing">💎 Pricing</a></div>
+<div class="search-bar-wrap" id="search-bar-wrap"><div class="search-bar-inner"><span>🔍</span><input class="search-bar-input" id="search-input" placeholder="Search..." oninput="runSearch(this.value)"><button onclick="toggleSearch()" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:16px">✕</button></div><div class="search-results" id="search-results"></div></div>
+
+<div class="page-hero-rich">
+  <div class="page-hero-inner">
+    <div class="page-hero-label" id="ph-label">💰 Income Sources & AI</div>
+    <h1 class="page-hero-h1" id="ph-title"><span class="grad-te">15+ income sources.</span><br>18+ AI tools. $0 to start.</h1>
+    <p class="page-hero-sub" id="ph-sub">Every income source with a realistic timeline. Every AI tool with a "how to make money" guide. Click any card.</p>
+  </div>
+</div>
+
+<div class="section-wrap alt"><div class="section">
+  <div class="tab-bar">
+    <button class="tab-btn active" id="tab-income" onclick="showTab('income')"><span id="tab-inc-text">💰 Income</span></button>
+    <button class="tab-btn" id="tab-ai" onclick="showTab('ai')"><span id="tab-ai-text">🤖 AI Tools</span></button>
+  </div>
+
+  <div id="income-section">
+    <div class="sec-tag st-te"><div class="sec-tag-dot"></div><span class="sec-tag-txt" id="inc-tag">Income Sources</span></div>
+    <div class="income-grid" id="income-grid"></div>
+  </div>
+
+  <div id="ai-section" style="display:none">
+    <div class="sec-tag st-pu"><div class="sec-tag-dot"></div><span class="sec-tag-txt" id="ai-tag">AI Tools</span></div>
+    <div class="ai-grid" id="ai-grid"></div>
+  </div>
+</div></div>
+
+<div class="modal-ov" id="detail-modal" onclick="if(event.target===this)closeModal()"><div class="modal-bx"><div class="modal-hd"><div class="modal-tl" id="modal-title"></div><button class="modal-cl" onclick="closeModal()">✕</button></div><div class="modal-bd" id="modal-body"></div></div></div>
+
+<footer class="main-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div><div class="footer-logo">🔓 <span style="color:rgba(255,255,255,.85)">Life</span><span style="color:var(--or)">Unlocked</span></div><div class="footer-tagline">Earn online. Live anywhere.<br>lifeunlocked.app</div></div>
+      <div><div class="footer-col-title" data-i18n="ft_platform">Platform</div><div class="footer-links"><a href="program.html" data-i18n="nav_program">Program</a><a href="destinations.html" data-i18n="nav_destinations">Destinations</a><a href="income.html" data-i18n="nav_income">Income & AI</a><a href="visa.html" data-i18n="nav_visa">Visa</a><a href="support.html" data-i18n="nav_support">Support</a></div></div>
+      <div><div class="footer-col-title" data-i18n="ft_plans">Plans</div><div class="footer-links"><a href="index.html#pricing">Free</a><a href="index.html#pricing">Pro $9.99/mo</a><a href="index.html#pricing">VIP $149</a></div></div>
+      <div><div class="footer-col-title" data-i18n="ft_legal">Legal</div><div class="footer-links"><a href="#" data-i18n="ft_privacy">Privacy</a><a href="#" data-i18n="ft_terms">Terms</a><a href="support.html" data-i18n="ft_help">Help</a></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 LifeUnlocked</span><span>EN · FR · AR · ES · TR · HI · PT · ID</span></div>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+const PT = {
+  en:{label:'💰 Income Sources & AI',title:'<span class="grad-te">15+ income sources.</span><br>18+ AI tools. $0 to start.',sub:'Every income source with a realistic timeline. Every AI tool with a "how to make money" guide. Click any card.',tabInc:'💰 Income',tabAI:'🤖 AI Tools',incTag:'Income Sources',aiTag:'AI Tools',easy:'Beginner',med:'Intermediate',hard:'Advanced',earnTitle:'How to make money',startBtn:'Start the Program →'},
+  fr:{label:'💰 Revenus & IA',title:'<span class="grad-te">15+ sources de revenus.</span><br>18+ outils IA. 0$ pour commencer.',sub:'Chaque source de revenu avec un délai réaliste. Chaque outil IA avec un guide "comment gagner de l\'argent".',tabInc:'💰 Revenus',tabAI:'🤖 Outils IA',incTag:'Sources de Revenus',aiTag:'Outils IA',easy:'Débutant',med:'Intermédiaire',hard:'Avancé',earnTitle:'Comment gagner de l\'argent',startBtn:'Commencer →'},
+  ar:{label:'💰 مصادر الدخل والذكاء',title:'<span class="grad-te">+15 مصدر دخل.</span><br>+18 أداة ذكاء. ابدأ بـ 0$.',sub:'كل مصدر دخل مع جدول زمني واقعي. كل أداة ذكاء مع دليل "كيف تكسب المال".',tabInc:'💰 الدخل',tabAI:'🤖 أدوات الذكاء',incTag:'مصادر الدخل',aiTag:'أدوات الذكاء',easy:'مبتدئ',med:'متوسط',hard:'متقدم',earnTitle:'كيف تكسب المال',startBtn:'ابدأ البرنامج ←'},
+  es:{label:'💰 Ingresos & IA',title:'<span class="grad-te">15+ fuentes.</span><br>18+ herramientas IA. $0 para empezar.',sub:'Cada fuente con un cronograma realista.',tabInc:'💰 Ingresos',tabAI:'🤖 IA',incTag:'Fuentes de Ingresos',aiTag:'Herramientas IA',easy:'Principiante',med:'Intermedio',hard:'Avanzado',earnTitle:'Cómo ganar dinero',startBtn:'Empezar →'},
+  tr:{label:'💰 Gelir & AI',title:'<span class="grad-te">15+ gelir kaynağı.</span><br>18+ AI aracı.',sub:'Her gelir kaynağı gerçekçi bir zaman çizelgesi ile.',tabInc:'💰 Gelir',tabAI:'🤖 AI',incTag:'Gelir Kaynakları',aiTag:'AI Araçları',easy:'Başlangıç',med:'Orta',hard:'İleri',earnTitle:'Nasıl para kazanılır',startBtn:'Başla →'},
+  hi:{label:'💰 आय और AI',title:'<span class="grad-te">15+ आय स्रोत।</span><br>18+ AI उपकरण।',sub:'हर स्रोत यथार्थवादी समयरेखा के साथ।',tabInc:'💰 आय',tabAI:'🤖 AI',incTag:'आय स्रोत',aiTag:'AI उपकरण',easy:'शुरुआती',med:'मध्यवर्ती',hard:'उन्नत',earnTitle:'पैसे कैसे कमाएं',startBtn:'शुरू करें →'},
+  pt:{label:'💰 Renda & IA',title:'<span class="grad-te">15+ fontes de renda.</span><br>18+ ferramentas IA.',sub:'Cada fonte com cronograma realista.',tabInc:'💰 Renda',tabAI:'🤖 IA',incTag:'Fontes de Renda',aiTag:'Ferramentas IA',easy:'Iniciante',med:'Intermediário',hard:'Avançado',earnTitle:'Como ganhar dinheiro',startBtn:'Começar →'},
+  id:{label:'💰 Penghasilan & AI',title:'<span class="grad-te">15+ sumber penghasilan.</span><br>18+ alat AI.',sub:'Setiap sumber dengan jadwal realistis.',tabInc:'💰 Penghasilan',tabAI:'🤖 AI',incTag:'Sumber Penghasilan',aiTag:'Alat AI',easy:'Pemula',med:'Menengah',hard:'Lanjutan',earnTitle:'Cara menghasilkan uang',startBtn:'Mulai →'},
+};
+
+const lvM = {e:{bg:'var(--te3)',c:'var(--te)'},m:{bg:'var(--or4)',c:'var(--or)'},h:{bg:'var(--pu3)',c:'var(--pu)'}};
+
+const INC = [
+  {i:'🎬',bg:'#e6f9f0',n:'Video Editing',sp:'2–4 weeks',d:'Edit videos for YouTubers, TikTokers, businesses. Highest-demand creative skill globally. Learn CapCut in 30 days.',r:'$15–$150/video',lv:'e'},
+  {i:'🎨',bg:'#fce8f3',n:'Graphic Design (Canva)',sp:'1–3 weeks',d:'Social posts, logos, presentations. No design degree needed — Canva AI does 80%.',r:'$20–$200/project',lv:'e'},
+  {i:'📺',bg:'#fdf6e3',n:'YouTube Automation',sp:'3–6 months',d:'Faceless YouTube channels with AI voice and images. Multiple channels = passive streams.',r:'$500–$5,000/mo',lv:'m'},
+  {i:'✍️',bg:'#e6f0f9',n:'Copywriting & Content',sp:'1–2 weeks',d:'Blog posts, ads, emails. Arabic and French content extremely well paid.',r:'$50–$500/article',lv:'e'},
+  {i:'🛍️',bg:'#f9e6e6',n:'Print-on-Demand (Etsy)',sp:'2–6 weeks',d:'Designs in Canva, Printful prints. Zero inventory, zero upfront cost.',r:'$5–$50/sale',lv:'e'},
+  {i:'📱',bg:'#f3e6f9',n:'Social Media Management',sp:'1–2 weeks',d:'Manage Instagram, TikTok, Facebook for local businesses. Most stable freelance model.',r:'$200–$1,500/mo',lv:'e'},
+  {i:'🌐',bg:'#e6fdf6',n:'Translation Services',sp:'3–7 days',d:'Arabic↔English, French↔English. FASTEST first income — start within first week.',r:'$0.08–$0.20/word',lv:'e'},
+  {i:'🎓',bg:'#fff0e6',n:'Online Teaching',sp:'1–2 weeks',d:'Teach Arabic, French, or any skill on Preply, iTalki, Superprof.',r:'$10–$50/hour',lv:'e'},
+  {i:'🤖',bg:'#e6e6f9',n:'AI Services (2025)',sp:'2–4 weeks',d:'Help businesses use Claude, ChatGPT, Midjourney. Hottest skill of 2025.',r:'$30–$200/hour',lv:'m'},
+  {i:'📊',bg:'#f6f9e6',n:'Virtual Assistant',sp:'3–7 days',d:'Easiest entry point — zero skills needed. Get first client this week.',r:'$5–$20/hour',lv:'e'},
+  {i:'📸',bg:'#e6f9fc',n:'Photography',sp:'1–4 weeks',d:'Hotels, restaurants, influencers. Day rates in Bali/Thailand $100–2,000.',r:'$100–$2,000/day',lv:'m'},
+  {i:'💬',bg:'#f9e6fc',n:'Community Management',sp:'1–2 weeks',d:'Manage Discord servers, Facebook groups for brands. Monthly retainer.',r:'$500–$2,000/mo',lv:'e'},
+  {i:'📦',bg:'#e6f9e6',n:'Dropshipping',sp:'1–3 months',d:'Sell products online without inventory. TikTok Shop + Shopify + Facebook Ads.',r:'$500–$10,000/mo',lv:'m'},
+  {i:'📋',bg:'#f0fce6',n:'Blog + Pinterest',sp:'6–18 months',d:'Niche blog with Pinterest traffic. Passive Google AdSense + affiliate.',r:'$200–$5,000/mo',lv:'m'},
+  {i:'🏪',bg:'#fce6f6',n:'Amazon FBA',sp:'3–6 months',d:'Source from Asia, sell on Amazon. Requires $1,000–3,000 startup.',r:'$1,000–$20,000/mo',lv:'h'},
+];
+
+const plB = {free:{bg:'var(--te3)',c:'var(--te)',t:'Free'},pro:{bg:'var(--pu3)',c:'var(--pu)',t:'Pro'},vip:{bg:'var(--go3)',c:'var(--go)',t:'VIP'}};
+
+const AIT = [
+  {n:'Claude AI',cat:'Analysis & Strategy',i:'🤖',bg:'#f3e6f9',pl:'free',d:'Best AI for writing, planning, strategy. Use it for proposals, content, client communication.',e:'Content · Strategy · Writing'},
+  {n:'ChatGPT',cat:'Versatile AI',i:'💬',bg:'#e6f9f2',pl:'free',d:'Most popular AI globally. Quick tasks, DALL-E images, coding help.',e:'Images · Code · Tasks'},
+  {n:'Canva AI',cat:'Design',i:'🎨',bg:'#fce8f3',pl:'free',d:'Stunning designs with AI. Magic background removal, AI elements.',e:'Design · Brand · Sell'},
+  {n:'CapCut AI',cat:'Video Editing',i:'🎬',bg:'#e6f0f9',pl:'free',d:'#1 free video editor. AI captions, background removal, scene detection.',e:'TikTok · YouTube · Reels'},
+  {n:'ElevenLabs',cat:'AI Voice',i:'🎙️',bg:'#fdf6e3',pl:'pro',d:'Ultra-realistic AI voice in any language. YouTube voiceovers, podcasts.',e:'YouTube · Voiceovers'},
+  {n:'Midjourney',cat:'AI Images',i:'🖼️',bg:'#e6eef9',pl:'pro',d:'Gold standard for AI images. Visuals for clients, Etsy, thumbnails.',e:'Images · Etsy · Thumbnails'},
+  {n:'HeyGen',cat:'AI Video Avatar',i:'👤',bg:'#f9e6e6',pl:'pro',d:'Professional video with AI avatars — no filming yourself.',e:'YouTube · Courses · Marketing'},
+  {n:'Perplexity AI',cat:'AI Research',i:'🔍',bg:'#e6f9f0',pl:'free',d:'Real-time internet research. Find clients, research markets, trends.',e:'Research · Intel'},
+  {n:'Leonardo AI',cat:'AI Art',i:'✨',bg:'#f3e6ff',pl:'pro',d:'Advanced AI art. Better than Midjourney for some styles.',e:'Art · Etsy · Products'},
+  {n:'Runway ML',cat:'AI Video',i:'🎥',bg:'#e6fff9',pl:'pro',d:'Generate videos from text or images. High-value service to sell.',e:'Video gen · Clients'},
+  {n:'Notion AI',cat:'Productivity',i:'📋',bg:'#f0f0f0',pl:'free',d:'Manage entire freelance business. AI summarizes, writes, plans.',e:'Organize · Plan · Scale'},
+  {n:'Suno AI',cat:'AI Music',i:'🎵',bg:'#fff0e6',pl:'pro',d:'Original music with AI in any genre. Stock music or custom service.',e:'Music · Stock · Jingles'},
+  {n:'Gemini',cat:'Google AI',i:'🌟',bg:'#e6f0ff',pl:'free',d:'Google AI integrated with Workspace. Best for Docs, Sheets, Gmail.',e:'Research · Docs'},
+  {n:'Copy.ai',cat:'Marketing Copy',i:'📝',bg:'#fce6e6',pl:'pro',d:'Sales copy, email sequences, ad scripts. Essential for e-commerce.',e:'Ads · Emails · Funnels'},
+  {n:'Synthesia',cat:'AI Presenter',i:'🎭',bg:'#e6f9fc',pl:'vip',d:'Professional explainer videos with AI presenters in 130+ languages.',e:'Premium · B2B service'},
+  {n:'Kling AI',cat:'AI Video Gen',i:'🎞️',bg:'#f9e6fc',pl:'vip',d:'One of most advanced AI video generation tools. Cinematic quality.',e:'Cinematic · Scale'},
+  {n:'Luma AI',cat:'3D & Video',i:'🌐',bg:'#e6fce9',pl:'vip',d:'3D models and Dream Machine video. Unique skill — top Fiverr rates.',e:'3D · Premium rates'},
+  {n:'Grok',cat:'Real-time AI',i:'⚡',bg:'#f9f0e6',pl:'pro',d:'X\'s AI with real-time internet. Trending topics, social ideas.',e:'Trends · Social · Research'},
+];
+
+function getT(){return PT[i18n.current] || PT.en;}
+let currentTab = 'income';
+
+function showTab(t){
+  currentTab = t;
+  document.getElementById('income-section').style.display = t === 'income' ? 'block' : 'none';
+  document.getElementById('ai-section').style.display = t === 'ai' ? 'block' : 'none';
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + t).classList.add('active');
+}
+window.showTab = showTab;
+
+function openModal(title, body){
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = body;
+  document.getElementById('detail-modal').classList.add('open');
+}
+function closeModal(){document.getElementById('detail-modal').classList.remove('open');}
+window.openModal = openModal; window.closeModal = closeModal;
+
+function renderIncome(){
+  const t = getT();
+  const lvT = {e:t.easy, m:t.med, h:t.hard};
+  document.getElementById('income-grid').innerHTML = INC.map(s => {
+    const body = `<p style="font-size:14px;color:var(--mu);line-height:1.75;margin-bottom:16px">${s.d}</p>
+      <div style="background:var(--or4);border:1px solid rgba(255,107,53,.15);border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">💰 ${s.r}</div>
+        <div style="font-size:14px;color:var(--tx);font-weight:500">${t.earnTitle}</div>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center" onclick="closeModal();window.location='program.html'">${t.startBtn}</button>`;
+    return `<div class="ic" onclick="openModal('${s.n}', \`${body.replace(/`/g,'\\`')}\`)">
+      <div class="ic-top"><div class="ic-ico" style="background:${s.bg}">${s.i}</div><div><div class="ic-name">${s.n}</div><div class="ic-sp">${s.sp}</div></div></div>
+      <div class="ic-desc">${s.d}</div>
+      <div class="ic-bot"><div class="ic-r">${s.r}</div><span class="ic-lv" style="background:${lvM[s.lv].bg};color:${lvM[s.lv].c}">${lvT[s.lv]}</span></div>
+    </div>`;
+  }).join('');
+}
+
+function renderAI(){
+  const t = getT();
+  document.getElementById('ai-grid').innerHTML = AIT.map(tool => {
+    const body = `<p style="font-size:14px;color:var(--mu);line-height:1.75;margin-bottom:16px">${tool.d}</p>
+      <div style="background:var(--or4);border:1px solid rgba(255,107,53,.15);border-radius:12px;padding:16px;margin-bottom:16px">
+        <div style="font-family:Syne,sans-serif;font-size:11px;font-weight:700;color:var(--or);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px">💰 ${t.earnTitle}</div>
+        <div style="font-size:14px;color:var(--tx);font-weight:500">${tool.e}</div>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center" onclick="closeModal();window.location='program.html'">${t.startBtn}</button>`;
+    return `<div class="ac" onclick="openModal('${tool.n}', \`${body.replace(/`/g,'\\`')}\`)">
+      <div class="ac-badge" style="background:${plB[tool.pl].bg};color:${plB[tool.pl].c}">${plB[tool.pl].t}</div>
+      <div class="ac-top"><div class="ac-ico" style="background:${tool.bg}">${tool.i}</div><div><div class="ac-name">${tool.n}</div><div class="ac-cat">${tool.cat}</div></div></div>
+      <div class="ac-desc">${tool.d.substring(0,90)}...</div>
+      <div class="ac-earn">💰 ${tool.e}</div>
+    </div>`;
+  }).join('');
+}
+
+function applyPageT(){
+  const t = getT();
+  document.getElementById('ph-label').textContent = t.label;
+  document.getElementById('ph-title').innerHTML = t.title;
+  document.getElementById('ph-sub').textContent = t.sub;
+  document.getElementById('tab-inc-text').textContent = t.tabInc;
+  document.getElementById('tab-ai-text').textContent = t.tabAI;
+  document.getElementById('inc-tag').textContent = t.incTag;
+  document.getElementById('ai-tag').textContent = t.aiTag;
+  renderIncome(); renderAI();
+}
+
+window.addEventListener('langchange', applyPageT);
+document.addEventListener('DOMContentLoaded', applyPageT);
+</script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Program — LifeUnlocked</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.phase-detail{background:#fff;border:1px solid var(--b1);border-radius:20px;padding:32px;margin-bottom:20px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:all .3s}
+.phase-detail:hover{box-shadow:0 8px 24px rgba(0,0,0,.08)}
+.ph-header{display:flex;align-items:flex-start;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.ph-num-badge{font-family:'Syne',sans-serif;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;padding:6px 14px;border-radius:20px;white-space:nowrap}
+.ph-ico{font-size:36px}
+.ph-title{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:var(--tx);letter-spacing:-.5px;margin-bottom:6px}
+.ph-timeline{font-size:13px;font-weight:600}
+.ph-desc{font-size:15px;color:var(--mu);line-height:1.75;margin-bottom:20px}
+.ph-steps{display:flex;flex-direction:column;gap:10px;margin-bottom:20px}
+.ph-step{display:flex;align-items:flex-start;gap:12px;padding:12px;background:var(--bg2);border-radius:12px}
+.ph-step-n{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;min-width:26px;font-family:'Syne',sans-serif;color:#fff}
+.ph-step-t{font-size:13px;color:var(--tx);line-height:1.5;font-weight:500}
+.ph-goal{border-radius:12px;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.ph-goal-t{font-family:'Syne',sans-serif;font-size:13px;font-weight:700}
+.ph-goal-v{font-family:'Syne',sans-serif;font-size:14px;font-weight:800}
+.tools-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin-top:28px}
+.tool-mini{background:#fff;border:1px solid var(--b1);border-radius:12px;padding:14px;display:flex;align-items:center;gap:10px;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.tool-mini-ico{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;min-width:36px}
+.tool-mini-name{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--tx)}
+.tool-mini-sub{font-size:11px;color:var(--mu);margin-top:1px}
+.fam-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:28px}
+.fam-card{background:#fff;border:1px solid var(--b1);border-radius:16px;padding:22px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.fam-card:hover{box-shadow:0 8px 24px rgba(0,0,0,.08);transform:translateY(-3px)}
+.fam-ico{font-size:32px;margin-bottom:12px}
+.fam-title{font-family:'Syne',sans-serif;font-size:16px;font-weight:800;color:var(--tx);margin-bottom:8px}
+.fam-desc{font-size:13px;color:var(--mu);line-height:1.65;margin-bottom:14px}
+.fam-feat{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--mu);margin-bottom:6px}
+.fam-check{color:var(--te);font-weight:700}
+</style>
+</head>
+<body>
+<div class="auth-overlay" id="auth-overlay"><div class="auth-box" id="auth-box"><div class="auth-header"><div class="auth-logo">🔓 <strong>Life</strong><span style="color:var(--or)">Unlocked</span></div><button class="auth-close" onclick="closeAuth()">✕</button></div><div class="auth-tabs"><button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')" data-i18n="auth_signin">Sign In</button><button class="auth-tab" id="tab-signup" onclick="switchTab('signup')" data-i18n="auth_signup">Create Account</button></div><div id="auth-form-area"></div></div></div>
+
+<nav id="main-nav">
+  <div class="nav-logo" onclick="window.location='index.html'"><div class="nav-logo-mark">🔓</div><div><span class="nav-life">Life</span><span class="nav-ul">Unlocked</span></div></div>
+  <div class="nav-links"><a href="program.html" class="active" data-i18n="nav_program">Program</a><a href="destinations.html" data-i18n="nav_destinations">Destinations</a><a href="income.html" data-i18n="nav_income">Income & AI</a><a href="visa.html" data-i18n="nav_visa">Visa</a><a href="support.html" data-i18n="nav_support">Support</a><a href="index.html#pricing" data-i18n="nav_pricing">Pricing</a></div>
+  <div class="nav-right"><div class="nav-search-btn" onclick="toggleSearch()">🔍 <span data-i18n="nav_search">Search...</span></div><button class="nav-login-btn" onclick="openAuth('signin')" id="nav-login-btn" data-i18n="nav_login">Log in</button><button class="nav-cta-btn" onclick="openAuth('signup')" data-i18n="nav_cta">Start Free →</button></div>
+  <button class="nav-mobile-menu" onclick="toggleMobileNav()">☰</button>
+</nav>
+
+<div class="mobile-nav" id="mobile-nav"><a href="program.html">📋 Program</a><a href="destinations.html">🌍 Destinations</a><a href="income.html">💰 Income & AI</a><a href="visa.html">📋 Visa</a><a href="support.html">💬 Support</a><a href="index.html#pricing">💎 Pricing</a></div>
+<div class="search-bar-wrap" id="search-bar-wrap"><div class="search-bar-inner"><span>🔍</span><input class="search-bar-input" id="search-input" placeholder="Search..." oninput="runSearch(this.value)"><button onclick="toggleSearch()" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:16px">✕</button></div><div class="search-results" id="search-results"></div></div>
+
+<div class="page-hero-rich">
+  <div class="page-hero-inner">
+    <div class="page-hero-label" id="ph-label">📋 Complete Program</div>
+    <h1 class="page-hero-h1" id="ph-title">From <span class="grad-or">$0 to immigration</span><br>in 4 phases</h1>
+    <p class="page-hero-sub" id="ph-sub">The only program that takes you from zero income to living in your dream country — with full support at every stage.</p>
+  </div>
+</div>
+
+<div class="section-wrap alt"><div class="section" id="phases-container"></div></div>
+
+<div class="section-wrap"><div class="section section-center">
+<div class="sec-tag st-pu"><div class="sec-tag-dot"></div><span class="sec-tag-txt" id="tools-tag">Essential Tools</span></div>
+<h2 class="sec-heading" id="tools-h">Tools you'll use <span class="grad-pu">every day</span></h2>
+<p class="sec-sub c" id="tools-sub">Every tool is free or freemium. Full tutorials included.</p>
+<div class="tools-grid" id="tools-grid"></div>
+</div></div>
+
+<div class="section-wrap alt" id="family"><div class="section">
+<div class="sec-tag st-pk"><div class="sec-tag-dot"></div><span class="sec-tag-txt" id="fam-tag">Family & Couples</span></div>
+<h2 class="sec-heading" id="fam-h">Moving abroad <span class="grad-or">as a family?</span></h2>
+<p class="sec-sub" id="fam-sub">Dedicated programs for every situation.</p>
+<div class="fam-grid" id="fam-grid"></div>
+</div></div>
+
+<div class="section-wrap" style="text-align:center;padding:60px 0">
+<div class="section section-center" style="max-width:600px">
+<h2 class="sec-heading" id="cta-h">Ready to start your <span class="grad-or">journey?</span></h2>
+<p class="sec-sub c" id="cta-sub" style="margin-bottom:28px">Take the free quiz. No credit card needed.</p>
+<div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap">
+  <button class="btn-primary" onclick="openAuth('signup')" id="cta1">🚀 Start My Free Plan</button>
+  <button class="btn-secondary" onclick="window.location='index.html#pricing'" id="cta2">View Pricing →</button>
+</div>
+</div>
+</div>
+
+<footer class="main-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div><div class="footer-logo">🔓 <span style="color:rgba(255,255,255,.85)">Life</span><span style="color:var(--or)">Unlocked</span></div><div class="footer-tagline">Earn online. Live anywhere.<br>lifeunlocked.app</div></div>
+      <div><div class="footer-col-title" data-i18n="ft_platform">Platform</div><div class="footer-links"><a href="program.html" data-i18n="nav_program">Program</a><a href="destinations.html" data-i18n="nav_destinations">Destinations</a><a href="income.html" data-i18n="nav_income">Income & AI</a><a href="visa.html" data-i18n="nav_visa">Visa</a><a href="support.html" data-i18n="nav_support">Support</a></div></div>
+      <div><div class="footer-col-title" data-i18n="ft_plans">Plans</div><div class="footer-links"><a href="index.html#pricing">Free</a><a href="index.html#pricing">Pro $9.99/mo</a><a href="index.html#pricing">VIP $149</a></div></div>
+      <div><div class="footer-col-title" data-i18n="ft_legal">Legal</div><div class="footer-links"><a href="#" data-i18n="ft_privacy">Privacy</a><a href="#" data-i18n="ft_terms">Terms</a><a href="support.html" data-i18n="ft_help">Help</a></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 LifeUnlocked</span><span>EN · FR · AR · ES · TR · HI · PT · ID</span></div>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+const PT = {
+  en:{label:'📋 Complete Program',title:'From <span class="grad-or">$0 to immigration</span><br>in 4 phases',sub:'The only program that takes you from zero income to living in your dream country — with full support at every stage. No shortcuts. Just a real plan that works.',
+   p1Title:'Build Your First Income',p1Time:'Timeline: 0–3 months · Goal: $500–1,000/month',
+   p1Desc:'You start from zero — no experience, no clients, no savings. We show you exactly which skill fits, where to offer it, and how to get your first paid client within 2 weeks.',
+   p1Steps:['Choose your income source based on your skills (quiz guides this)','Learn the tool: CapCut, Canva, or Claude AI — all free, 30 days','Create your profile on ComeUp and/or Fiverr with professional bio','Offer your service free to 3 friends to collect reviews','Get first paying client · Deliver quality · Get review · Raise prices'],
+   p1Goal:'Phase 1 Goal',p1GoalV:'$500–1,000/month · Stable first income',
+   p2Title:'Scale to a Stable Salary',p2Time:'Timeline: 3–9 months · Goal: $2,000–5,000/month',
+   p2Desc:'You have first income. Now we help you multiply it — more clients, better prices, automated workflow, second income source.',
+   p2Steps:['Raise your prices by 30% after 10 positive reviews','Add Upwork or Malt to reach European clients (2–3x more pay)','Start a second income stream alongside the first','Use AI tools (Claude, ChatGPT, Canva AI) to deliver faster','Set up Payoneer + Wise to receive internationally · Build 3-month runway'],
+   p2Goal:'Phase 2 Goal',p2GoalV:'$2,000–5,000/month · Consistent and growing',
+   p3Title:'Prepare Your Immigration',p3Time:'Timeline: 6–12 months · Goal: Visa approved + move date',
+   p3Desc:'You have the income. Now prepare the move — legally, logistically, financially. We handle complexity so you don\'t make expensive mistakes.',
+   p3Steps:['Choose destination based on passport, income, lifestyle','Prepare visa documents 4 months before planned move','Set up international banking: Wise + Payoneer + research local banks','Research housing: Facebook expat groups, Airbnb first month','Get health insurance (SafetyWing $45/mo) · Buy flight 3-4 months early'],
+   p3Goal:'Phase 3 Goal',p3GoalV:'Visa in hand · Flight booked · Housing arranged',
+   p4Title:'Land & Install',p4Time:'Timeline: 12–18 months · Goal: Fully installed',
+   p4Desc:'You arrive. And you\'re not alone. We help you navigate first weeks, find community, set up finances, and start actually living the life you worked for.',
+   p4Steps:['First week: Airbnb while exploring neighborhoods · Don\'t sign long-term yet','Open local bank account first week (Bangkok Bank, Kasikorn, CIMB)','Get local SIM with data · Set up co-working · Test internet','Join expat groups on Facebook, Meetup, Telegram in first 2 weeks','Continue working, growing, exploring · You made it. This is the beginning.'],
+   p4Goal:'Phase 4 Goal',p4GoalV:'Installed · Earning · Living the dream 🌴',
+   toolsTag:'Essential Tools',toolsH:'Tools you\'ll use <span class="grad-pu">every day</span>',toolsSub:'Every tool is free or freemium. Full tutorials included.',
+   famTag:'Family & Couples',famH:'Moving abroad <span class="grad-or">as a family?</span>',famSub:'We have dedicated programs for every situation.',
+   ctaH:'Ready to start your <span class="grad-or">journey?</span>',ctaSub:'Take the free quiz. No credit card needed.',cta1:'🚀 Start My Free Plan',cta2:'View Pricing →',
+   famC1t:'Couples Moving Abroad',famC1d:'Both working online or one with stable remote job? We build a plan for both — dual income strategies and visa options.',famC1f:['Joint visa planning','Dual income strategy','Best cities for couples','Couples community abroad'],
+   famC2t:'Families with Children',famC2d:'Moving with kids requires extra planning — schools, healthcare, family-friendly neighborhoods.',famC2f:['International school guides','Family health insurance','Family-friendly neighborhoods','Kids activities & community'],
+   famC3t:'Already Have Income',famC3d:'Already earning online? You don\'t need the income program. We provide visa, installation support, destination comparison.',famC3f:['Visa fast-track service','Housing search assistance','Local community connections','Bank & insurance setup']},
+  fr:{label:'📋 Programme Complet',title:'De <span class="grad-or">0$ à l\'immigration</span><br>en 4 phases',sub:'Le seul programme qui te mène de zéro revenu à vivre dans ton pays de rêve — avec un soutien complet à chaque étape.',
+   p1Title:'Construire ton premier revenu',p1Time:'Délai : 0–3 mois · Objectif : 500–1 000$/mois',
+   p1Desc:'Tu pars de zéro — pas d\'expérience, pas de clients. On te montre exactement quelle compétence convient et comment obtenir ton premier client en 2 semaines.',
+   p1Steps:['Choisis ta source de revenu selon tes compétences','Apprends l\'outil : CapCut, Canva ou Claude AI — gratuit, 30 jours','Crée ton profil sur ComeUp et/ou Fiverr','Offre tes services gratuits à 3 amis pour des avis','Obtiens ton 1er client payant · Qualité · Avis · Augmente prix'],
+   p1Goal:'Objectif Phase 1',p1GoalV:'500–1 000$/mois · Premier revenu stable',
+   p2Title:'Passer au salaire stable',p2Time:'Délai : 3–9 mois · Objectif : 2 000–5 000$/mois',
+   p2Desc:'Tu as ton premier revenu. Maintenant on te le multiplie — plus de clients, meilleurs prix, automatisation.',
+   p2Steps:['Augmente tes prix de 30% après 10 avis positifs','Ajoute Upwork ou Malt pour clients européens','Démarre un 2e flux de revenu','Utilise les IA pour livrer plus vite','Configure Payoneer + Wise · Constitue 3 mois de réserve'],
+   p2Goal:'Objectif Phase 2',p2GoalV:'2 000–5 000$/mois · Constant et croissant',
+   p3Title:'Préparer l\'immigration',p3Time:'Délai : 6–12 mois · Objectif : Visa + date',
+   p3Desc:'Tu as le revenu. Maintenant prépare le déménagement — légalement, logistiquement, financièrement.',
+   p3Steps:['Choisis ta destination selon passeport, revenu, style de vie','Prépare les documents 4 mois avant','Configure banking international : Wise + Payoneer','Recherche logement : groupes Facebook, Airbnb 1er mois','Assurance santé (SafetyWing 45$/mois) · Vol 3-4 mois avant'],
+   p3Goal:'Objectif Phase 3',p3GoalV:'Visa obtenu · Vol réservé · Logement',
+   p4Title:'Atterrir & s\'installer',p4Time:'Délai : 12–18 mois · Objectif : Installé',
+   p4Desc:'Tu arrives. Et tu n\'es pas seul. On t\'aide pour les premières semaines, trouver ta communauté, mettre en place tes finances.',
+   p4Steps:['1ère semaine : Airbnb en explorant · Pas de bail long','Ouvre compte bancaire local 1ère semaine','SIM locale · Co-working · Test internet','Rejoins groupes expat 2 premières semaines','Continue à travailler · Tu as réussi. C\'est le début.'],
+   p4Goal:'Objectif Phase 4',p4GoalV:'Installé · Gagne · Vit son rêve 🌴',
+   toolsTag:'Outils essentiels',toolsH:'Outils utilisés <span class="grad-pu">quotidiennement</span>',toolsSub:'Tous gratuits ou freemium. Tutoriels inclus.',
+   famTag:'Famille & Couples',famH:'Partir à l\'étranger <span class="grad-or">en famille ?</span>',famSub:'Programmes dédiés pour chaque situation.',
+   ctaH:'Prêt à commencer ton <span class="grad-or">voyage ?</span>',ctaSub:'Quiz gratuit. Aucune carte bancaire requise.',cta1:'🚀 Mon plan gratuit',cta2:'Voir les tarifs →',
+   famC1t:'Couples partent ensemble',famC1d:'Les deux travaillent en ligne ou un emploi à distance stable ? On construit un plan pour les deux.',famC1f:['Planification visa conjointe','Stratégie double revenu','Meilleures villes couples','Communauté couples'],
+   famC2t:'Familles avec enfants',famC2d:'Partir avec enfants demande planification — écoles, santé, quartiers.',famC2f:['Guides écoles internationales','Assurance santé famille','Quartiers familiaux','Activités enfants'],
+   famC3t:'Déjà des revenus',famC3d:'Déjà des revenus en ligne ? Pas besoin du programme revenus. Visa, installation, comparaison destinations.',famC3f:['Service visa rapide','Recherche logement','Communauté locale','Banque & assurance']},
+  ar:{label:'📋 البرنامج الكامل',title:'من <span class="grad-or">0$ إلى الهجرة</span><br>في 4 مراحل',sub:'البرنامج الوحيد الذي ينقلك من صفر دخل إلى العيش في بلد أحلامك — بدعم كامل في كل مرحلة.',
+   p1Title:'بناء دخلك الأول',p1Time:'الإطار الزمني: 0–3 أشهر · الهدف: 500–1,000$/شهر',
+   p1Desc:'تبدأ من الصفر — بلا خبرة، بلا عملاء. نوضح لك بالضبط ما يناسبك وكيف تحصل على عميلك الأول.',
+   p1Steps:['اختر مصدر دخلك حسب مهاراتك','تعلم الأداة: CapCut, Canva أو Claude AI — مجاني، 30 يومًا','أنشئ ملفك على ComeUp و/أو Fiverr','قدم خدمتك مجانًا لـ 3 أصدقاء للحصول على تقييمات','احصل على أول عميل مدفوع · جودة · تقييم · رفع الأسعار'],
+   p1Goal:'هدف المرحلة 1',p1GoalV:'500–1,000$/شهر · أول دخل ثابت',
+   p2Title:'التوسع إلى راتب ثابت',p2Time:'الإطار الزمني: 3–9 أشهر · الهدف: 2,000–5,000$/شهر',
+   p2Desc:'لديك دخل. الآن سنضاعفه — المزيد من العملاء، أسعار أفضل، أتمتة.',
+   p2Steps:['ارفع أسعارك 30% بعد 10 تقييمات إيجابية','أضف Upwork أو Malt للعملاء الأوروبيين','ابدأ مصدر دخل ثانٍ','استخدم أدوات الذكاء للتسليم الأسرع','إعداد Payoneer + Wise · بناء احتياطي 3 أشهر'],
+   p2Goal:'هدف المرحلة 2',p2GoalV:'2,000–5,000$/شهر · ثابت ومتنامي',
+   p3Title:'استعد للهجرة',p3Time:'الإطار الزمني: 6–12 شهرًا · الهدف: تأشيرة + تاريخ',
+   p3Desc:'لديك الدخل. الآن استعد للانتقال — قانونيًا ولوجستيًا وماليًا.',
+   p3Steps:['اختر الوجهة حسب جواز السفر والدخل','حضر مستندات التأشيرة قبل 4 أشهر','إعداد البنوك الدولية: Wise + Payoneer','ابحث عن السكن: مجموعات Facebook، Airbnb','تأمين صحي (SafetyWing 45$/شهر) · رحلة 3-4 أشهر مقدمًا'],
+   p3Goal:'هدف المرحلة 3',p3GoalV:'تأشيرة في اليد · رحلة محجوزة · سكن',
+   p4Title:'الهبوط والاستقرار',p4Time:'الإطار الزمني: 12–18 شهرًا · الهدف: مستقر',
+   p4Desc:'تصل. ولست وحدك. نساعدك في الأسابيع الأولى، إيجاد مجتمعك، إعداد ماليتك.',
+   p4Steps:['الأسبوع الأول: Airbnb أثناء الاستكشاف','افتح حسابًا مصرفيًا محليًا الأسبوع الأول','شريحة محلية · مساحة عمل · اختبار الإنترنت','انضم لمجموعات المغتربين أول أسبوعين','استمر في العمل · لقد نجحت. هذه البداية.'],
+   p4Goal:'هدف المرحلة 4',p4GoalV:'مستقر · يكسب · يعيش الحلم 🌴',
+   toolsTag:'الأدوات الأساسية',toolsH:'أدوات تستخدمها <span class="grad-pu">يوميًا</span>',toolsSub:'جميعها مجانية أو freemium. تعليمات كاملة.',
+   famTag:'العائلة والأزواج',famH:'الانتقال للخارج <span class="grad-or">كعائلة؟</span>',famSub:'برامج مخصصة لكل وضع.',
+   ctaH:'مستعد لبدء <span class="grad-or">رحلتك؟</span>',ctaSub:'اختبار مجاني. لا حاجة لبطاقة ائتمان.',cta1:'🚀 خطتي المجانية',cta2:'عرض الأسعار ←',
+   famC1t:'الأزواج المنتقلون معًا',famC1d:'كلاهما يعمل عبر الإنترنت أو عمل عن بُعد؟ نبني خطة للاثنين.',famC1f:['تخطيط تأشيرة مشترك','استراتيجية دخل مزدوج','أفضل مدن للأزواج','مجتمع الأزواج'],
+   famC2t:'العائلات بأطفال',famC2d:'الانتقال بالأطفال يتطلب تخطيطًا — المدارس، الرعاية، الأحياء.',famC2f:['أدلة المدارس الدولية','تأمين صحي عائلي','أحياء صديقة للعائلة','أنشطة الأطفال'],
+   famC3t:'لديك دخل بالفعل',famC3d:'لديك دخل أونلاين؟ لا تحتاج برنامج الدخل. نقدم التأشيرة والتركيب.',famC3f:['خدمة تأشيرة سريعة','مساعدة البحث عن سكن','اتصالات المجتمع المحلي','بنك وتأمين']},
+  es:{label:'📋 Programa Completo',title:'De <span class="grad-or">$0 a inmigración</span><br>en 4 fases',sub:'El único programa que te lleva de cero ingresos a vivir en tu país soñado.',p1Title:'Construye tu primer ingreso',p1Time:'0–3 meses · $500–1,000/mes',p1Desc:'Empiezas de cero. Te mostramos exactamente qué habilidad y cómo conseguir tu primer cliente.',p1Steps:['Elige fuente de ingresos','Aprende la herramienta','Crea perfil','Ofrece gratis a 3 amigos','Primer cliente pagador'],p1Goal:'Meta Fase 1',p1GoalV:'$500–1,000/mes',
+   p2Title:'Salario estable',p2Time:'3–9 meses · $2,000–5,000/mes',p2Desc:'Tienes el primer ingreso. Ahora multiplicamos.',p2Steps:['Sube precios 30%','Añade Upwork','Segunda fuente','Usa IA','Payoneer + Wise'],p2Goal:'Meta Fase 2',p2GoalV:'$2,000–5,000/mes',
+   p3Title:'Prepara inmigración',p3Time:'6–12 meses · Visa aprobada',p3Desc:'Tienes ingresos. Ahora preparas la mudanza.',p3Steps:['Elige destino','Documentos visa 4 meses antes','Banca internacional','Vivienda','Seguro salud'],p3Goal:'Meta Fase 3',p3GoalV:'Visa + vuelo + vivienda',
+   p4Title:'Aterriza',p4Time:'12–18 meses · Instalado',p4Desc:'Llegas. No estás solo.',p4Steps:['Airbnb 1ª semana','Banco local','SIM local','Únete a grupos expat','Sigue creciendo'],p4Goal:'Meta Fase 4',p4GoalV:'Instalado · Viviendo el sueño 🌴',
+   toolsTag:'Herramientas Esenciales',toolsH:'Herramientas <span class="grad-pu">diarias</span>',toolsSub:'Todas gratis o freemium.',famTag:'Familia & Parejas',famH:'¿Mudarse <span class="grad-or">en familia?</span>',famSub:'Programas dedicados para cada situación.',
+   ctaH:'¿Listo para tu <span class="grad-or">viaje?</span>',ctaSub:'Quiz gratis. Sin tarjeta.',cta1:'🚀 Plan Gratis',cta2:'Ver Precios →',
+   famC1t:'Parejas mudándose',famC1d:'Plan para ambos.',famC1f:['Visa conjunta','Doble ingreso','Mejores ciudades','Comunidad'],
+   famC2t:'Familias con niños',famC2d:'Planificación extra para escuelas y salud.',famC2f:['Escuelas internacionales','Seguro familiar','Barrios familiares','Actividades niños'],
+   famC3t:'Ya tienes ingresos',famC3d:'No necesitas programa de ingresos. Visa e instalación.',famC3f:['Visa rápida','Búsqueda vivienda','Comunidad local','Banco y seguro']},
+  tr:{label:'📋 Tam Program',title:'<span class="grad-or">$0\'dan göçe</span><br>4 aşamada',sub:'Sıfır gelirden hayalinizdeki ülkede yaşamaya götüren tek program.',p1Title:'İlk Gelirinizi Oluşturun',p1Time:'0–3 ay · $500–1,000/ay',p1Desc:'Sıfırdan başlarsınız.',p1Steps:['Gelir kaynağını seçin','Aracı öğrenin','Profil oluşturun','3 arkadaşa ücretsiz teklif','İlk ödeme yapan müşteri'],p1Goal:'Aşama 1 Hedef',p1GoalV:'$500–1,000/ay',
+   p2Title:'İstikrarlı Maaş',p2Time:'3–9 ay · $2,000–5,000/ay',p2Desc:'İlk gelir var. Şimdi çoğaltıyoruz.',p2Steps:['Fiyatları %30 yükseltin','Upwork ekleyin','İkinci kaynak','AI kullanın','Payoneer + Wise'],p2Goal:'Aşama 2 Hedef',p2GoalV:'$2,000–5,000/ay',
+   p3Title:'Göçe Hazırlanın',p3Time:'6–12 ay · Vize onaylandı',p3Desc:'Geliriniz var. Şimdi taşınmaya hazırlanın.',p3Steps:['Destinasyon seçin','Vize belgeleri','Uluslararası bankacılık','Konut','Sigorta'],p3Goal:'Aşama 3 Hedef',p3GoalV:'Vize + uçuş + konut',
+   p4Title:'İniş ve Yerleşme',p4Time:'12–18 ay · Yerleşik',p4Desc:'Varırsınız. Yalnız değilsiniz.',p4Steps:['1. hafta Airbnb','Yerel banka','Yerel SIM','Expat gruplarına katıl','Çalışmaya devam et'],p4Goal:'Aşama 4 Hedef',p4GoalV:'Yerleşik · Hayalini yaşıyor 🌴',
+   toolsTag:'Temel Araçlar',toolsH:'<span class="grad-pu">Her gün</span> kullanacağınız araçlar',toolsSub:'Hepsi ücretsiz veya freemium.',famTag:'Aile & Çiftler',famH:'<span class="grad-or">Aileyle</span> yurt dışına?',famSub:'Her duruma özel programlar.',
+   ctaH:'<span class="grad-or">Yolculuğunuza</span> hazır mısınız?',ctaSub:'Ücretsiz test. Kart gerekmiyor.',cta1:'🚀 Ücretsiz Plan',cta2:'Fiyatları Gör →',
+   famC1t:'Çiftler taşınıyor',famC1d:'İkisi için plan.',famC1f:['Ortak vize','Çift gelir','En iyi şehirler','Topluluk'],
+   famC2t:'Çocuklu aileler',famC2d:'Ekstra planlama gerekir.',famC2f:['Uluslararası okullar','Aile sigortası','Aile mahalleleri','Çocuk aktiviteleri'],
+   famC3t:'Zaten geliriniz var',famC3d:'Gelir programına ihtiyaç yok. Vize ve kurulum.',famC3f:['Hızlı vize','Konut araması','Yerel topluluk','Banka & sigorta']},
+  hi:{label:'📋 पूर्ण कार्यक्रम',title:'<span class="grad-or">$0 से प्रवास तक</span><br>4 चरणों में',sub:'एकमात्र कार्यक्रम जो आपको शून्य से सपनों के देश तक ले जाता है।',p1Title:'पहली आय बनाएं',p1Time:'0–3 महीने · $500–1,000/माह',p1Desc:'शून्य से शुरू।',p1Steps:['आय स्रोत चुनें','उपकरण सीखें','प्रोफ़ाइल बनाएं','3 दोस्तों को मुफ्त','पहला भुगतान ग्राहक'],p1Goal:'चरण 1 लक्ष्य',p1GoalV:'$500–1,000/माह',
+   p2Title:'स्थिर वेतन',p2Time:'3–9 महीने · $2,000–5,000/माह',p2Desc:'पहली आय है। अब बढ़ाएं।',p2Steps:['कीमतें 30% बढ़ाएं','Upwork जोड़ें','दूसरा स्रोत','AI का उपयोग','Payoneer + Wise'],p2Goal:'चरण 2 लक्ष्य',p2GoalV:'$2,000–5,000/माह',
+   p3Title:'प्रवास तैयारी',p3Time:'6–12 महीने · वीजा',p3Desc:'आय है। अब स्थानांतरण।',p3Steps:['गंतव्य चुनें','दस्तावेज 4 महीने पहले','बैंकिंग','आवास','बीमा'],p3Goal:'चरण 3 लक्ष्य',p3GoalV:'वीजा + उड़ान + आवास',
+   p4Title:'पहुंचें और बसें',p4Time:'12–18 महीने · बसे',p4Desc:'आप पहुंच गए। आप अकेले नहीं हैं।',p4Steps:['पहला सप्ताह Airbnb','स्थानीय बैंक','स्थानीय SIM','समूहों में शामिल','काम जारी रखें'],p4Goal:'चरण 4 लक्ष्य',p4GoalV:'बसे · सपना जीते 🌴',
+   toolsTag:'आवश्यक उपकरण',toolsH:'<span class="grad-pu">रोज़</span> उपयोग होने वाले उपकरण',toolsSub:'सभी मुफ्त।',famTag:'परिवार',famH:'<span class="grad-or">परिवार के साथ</span>?',famSub:'हर स्थिति के लिए कार्यक्रम।',
+   ctaH:'<span class="grad-or">यात्रा</span> शुरू करें?',ctaSub:'मुफ्त क्विज़।',cta1:'🚀 मुफ्त योजना',cta2:'मूल्य देखें →',
+   famC1t:'जोड़े',famC1d:'दोनों के लिए योजना।',famC1f:['संयुक्त वीजा','दोहरी आय','सर्वश्रेष्ठ शहर','समुदाय'],
+   famC2t:'बच्चों वाले परिवार',famC2d:'अतिरिक्त योजना।',famC2f:['स्कूल','बीमा','क्षेत्र','गतिविधियां'],
+   famC3t:'पहले से आय',famC3d:'वीजा और स्थापना।',famC3f:['तेज वीजा','आवास','समुदाय','बैंक']},
+  pt:{label:'📋 Programa Completo',title:'De <span class="grad-or">$0 à imigração</span><br>em 4 fases',sub:'O único programa que leva de zero renda a viver no país dos seus sonhos.',p1Title:'Construa Sua Primeira Renda',p1Time:'0–3 meses · $500–1.000/mês',p1Desc:'Começa do zero.',p1Steps:['Escolha fonte','Aprenda ferramenta','Crie perfil','3 amigos grátis','Primeiro cliente pagante'],p1Goal:'Meta Fase 1',p1GoalV:'$500–1.000/mês',
+   p2Title:'Salário Estável',p2Time:'3–9 meses · $2.000–5.000/mês',p2Desc:'Tem renda. Multiplique.',p2Steps:['Aumente preços 30%','Adicione Upwork','Segunda fonte','Use IA','Payoneer + Wise'],p2Goal:'Meta Fase 2',p2GoalV:'$2.000–5.000/mês',
+   p3Title:'Prepare Imigração',p3Time:'6–12 meses · Visto',p3Desc:'Tem renda. Prepare a mudança.',p3Steps:['Escolha destino','Documentos','Banco internacional','Moradia','Seguro'],p3Goal:'Meta Fase 3',p3GoalV:'Visto + voo + casa',
+   p4Title:'Pouso & Instalação',p4Time:'12–18 meses · Instalado',p4Desc:'Chegou. Não está só.',p4Steps:['1ª semana Airbnb','Banco local','SIM local','Grupos expat','Continue'],p4Goal:'Meta Fase 4',p4GoalV:'Instalado · Vivendo sonho 🌴',
+   toolsTag:'Ferramentas Essenciais',toolsH:'Ferramentas <span class="grad-pu">diárias</span>',toolsSub:'Todas grátis ou freemium.',famTag:'Família',famH:'<span class="grad-or">Em família?</span>',famSub:'Programas dedicados.',
+   ctaH:'Pronto para a <span class="grad-or">jornada?</span>',ctaSub:'Quiz grátis.',cta1:'🚀 Plano Grátis',cta2:'Ver Preços →',
+   famC1t:'Casais',famC1d:'Plano para ambos.',famC1f:['Visto conjunto','Dupla renda','Melhores cidades','Comunidade'],
+   famC2t:'Famílias com crianças',famC2d:'Planejamento extra.',famC2f:['Escolas','Seguro','Bairros','Atividades'],
+   famC3t:'Já tem renda',famC3d:'Visto e instalação.',famC3f:['Visto rápido','Moradia','Comunidade','Banco']},
+  id:{label:'📋 Program Lengkap',title:'Dari <span class="grad-or">$0 ke imigrasi</span><br>dalam 4 fase',sub:'Satu-satunya program yang membawa Anda dari nol penghasilan ke negara impian.',p1Title:'Bangun Penghasilan Pertama',p1Time:'0–3 bulan · $500–1.000/bln',p1Desc:'Mulai dari nol.',p1Steps:['Pilih sumber','Pelajari alat','Buat profil','3 teman gratis','Klien pertama bayar'],p1Goal:'Tujuan Fase 1',p1GoalV:'$500–1.000/bln',
+   p2Title:'Gaji Stabil',p2Time:'3–9 bulan · $2.000–5.000/bln',p2Desc:'Punya penghasilan. Lipatgandakan.',p2Steps:['Naikkan harga 30%','Tambah Upwork','Sumber kedua','Gunakan AI','Payoneer + Wise'],p2Goal:'Tujuan Fase 2',p2GoalV:'$2.000–5.000/bln',
+   p3Title:'Siapkan Imigrasi',p3Time:'6–12 bulan · Visa',p3Desc:'Punya penghasilan. Siapkan pindah.',p3Steps:['Pilih destinasi','Dokumen','Bank internasional','Hunian','Asuransi'],p3Goal:'Tujuan Fase 3',p3GoalV:'Visa + tiket + rumah',
+   p4Title:'Mendarat & Menetap',p4Time:'12–18 bulan · Menetap',p4Desc:'Anda tiba. Tidak sendiri.',p4Steps:['Minggu 1 Airbnb','Bank lokal','SIM lokal','Bergabung grup','Lanjutkan'],p4Goal:'Tujuan Fase 4',p4GoalV:'Menetap · Hidup impian 🌴',
+   toolsTag:'Alat Penting',toolsH:'Alat yang Anda gunakan <span class="grad-pu">setiap hari</span>',toolsSub:'Semua gratis atau freemium.',famTag:'Keluarga',famH:'<span class="grad-or">Bersama keluarga?</span>',famSub:'Program khusus untuk setiap situasi.',
+   ctaH:'Siap untuk <span class="grad-or">perjalanan?</span>',ctaSub:'Kuis gratis.',cta1:'🚀 Rencana Gratis',cta2:'Lihat Harga →',
+   famC1t:'Pasangan',famC1d:'Rencana untuk keduanya.',famC1f:['Visa bersama','Penghasilan ganda','Kota terbaik','Komunitas'],
+   famC2t:'Keluarga dengan anak',famC2d:'Perencanaan ekstra.',famC2f:['Sekolah','Asuransi','Lingkungan','Aktivitas'],
+   famC3t:'Sudah berpenghasilan',famC3d:'Visa dan instalasi.',famC3f:['Visa cepat','Hunian','Komunitas','Bank']},
+};
+
+const TOOLS = [
+  {n:'Claude AI',sub:'Writing & planning — Free',i:'🤖',c:'#f3e6f9'},
+  {n:'ChatGPT',sub:'Quick tasks & ideas',i:'💬',c:'#e6f9f2'},
+  {n:'Canva AI',sub:'Design & visuals',i:'🎨',c:'#fce8f3'},
+  {n:'CapCut AI',sub:'Video editing',i:'🎬',c:'#e6f0f9'},
+  {n:'Fiverr',sub:'International clients',i:'💼',c:'#fdf6e3'},
+  {n:'ComeUp',sub:'French market',i:'💶',c:'#e6f9f2'},
+  {n:'Payoneer',sub:'Receive payments',i:'💰',c:'#e6f0f9'},
+  {n:'Wise',sub:'Multi-currency',i:'🏦',c:'#f0e6f9'},
+];
+
+function getT(){return PT[i18n.current] || PT.en;}
+
+function renderPhases(){
+  const t = getT();
+  const phases = [
+    {n:'Phase 01',col:'var(--te)',ico:'🌱',title:t.p1Title,time:t.p1Time,desc:t.p1Desc,steps:t.p1Steps,goal:t.p1Goal,goalV:t.p1GoalV,bg:'rgba(0,200,150,.07)',br:'rgba(0,200,150,.15)'},
+    {n:'Phase 02',col:'var(--or)',ico:'💰',title:t.p2Title,time:t.p2Time,desc:t.p2Desc,steps:t.p2Steps,goal:t.p2Goal,goalV:t.p2GoalV,bg:'rgba(255,107,53,.07)',br:'rgba(255,107,53,.15)'},
+    {n:'Phase 03',col:'var(--pu)',ico:'📋',title:t.p3Title,time:t.p3Time,desc:t.p3Desc,steps:t.p3Steps,goal:t.p3Goal,goalV:t.p3GoalV,bg:'rgba(124,58,237,.07)',br:'rgba(124,58,237,.15)'},
+    {n:'Phase 04',col:'var(--pk)',ico:'✈️',title:t.p4Title,time:t.p4Time,desc:t.p4Desc,steps:t.p4Steps,goal:t.p4Goal,goalV:t.p4GoalV,bg:'rgba(244,63,94,.07)',br:'rgba(244,63,94,.15)'},
+  ];
+  document.getElementById('phases-container').innerHTML = phases.map(p => `
+    <div class="phase-detail">
+      <div class="ph-header">
+        <div><span class="ph-num-badge" style="background:${p.bg};color:${p.col}">${p.n}</span></div>
+        <span class="ph-ico">${p.ico}</span>
+        <div><div class="ph-title">${p.title}</div><div class="ph-timeline" style="color:${p.col}">${p.time}</div></div>
+      </div>
+      <p class="ph-desc">${p.desc}</p>
+      <div class="ph-steps">
+        ${p.steps.map((s,i) => `<div class="ph-step"><div class="ph-step-n" style="background:${p.col}">${i+1}</div><div class="ph-step-t">${s}</div></div>`).join('')}
+      </div>
+      <div class="ph-goal" style="background:${p.bg};border:1px solid ${p.br}">
+        <div class="ph-goal-t" style="color:${p.col}">${p.goal}</div>
+        <div class="ph-goal-v" style="color:${p.col}">${p.goalV}</div>
+      </div>
+    </div>`).join('');
+}
+
+function renderTools(){
+  document.getElementById('tools-grid').innerHTML = TOOLS.map(t => `
+    <div class="tool-mini"><div class="tool-mini-ico" style="background:${t.c}">${t.i}</div><div><div class="tool-mini-name">${t.n}</div><div class="tool-mini-sub">${t.sub}</div></div></div>`).join('');
+}
+
+function renderFamily(){
+  const t = getT();
+  const cards = [
+    {ico:'👫',title:t.famC1t,desc:t.famC1d,feats:t.famC1f},
+    {ico:'👨‍👩‍👧‍👦',title:t.famC2t,desc:t.famC2d,feats:t.famC2f},
+    {ico:'🤝',title:t.famC3t,desc:t.famC3d,feats:t.famC3f},
+  ];
+  document.getElementById('fam-grid').innerHTML = cards.map(c => `
+    <div class="fam-card">
+      <div class="fam-ico">${c.ico}</div>
+      <div class="fam-title">${c.title}</div>
+      <div class="fam-desc">${c.desc}</div>
+      ${c.feats.map(f => `<div class="fam-feat"><span class="fam-check">✓</span>${f}</div>`).join('')}
+    </div>`).join('');
+}
+
+function applyPageT(){
+  const t = getT();
+  document.getElementById('ph-label').textContent = t.label;
+  document.getElementById('ph-title').innerHTML = t.title;
+  document.getElementById('ph-sub').textContent = t.sub;
+  document.getElementById('tools-tag').textContent = t.toolsTag;
+  document.getElementById('tools-h').innerHTML = t.toolsH;
+  document.getElementById('tools-sub').textContent = t.toolsSub;
+  document.getElementById('fam-tag').textContent = t.famTag;
+  document.getElementById('fam-h').innerHTML = t.famH;
+  document.getElementById('fam-sub').textContent = t.famSub;
+  document.getElementById('cta-h').innerHTML = t.ctaH;
+  document.getElementById('cta-sub').textContent = t.ctaSub;
+  document.getElementById('cta1').textContent = t.cta1;
+  document.getElementById('cta2').textContent = t.cta2;
+  renderPhases(); renderFamily();
+}
+
+window.addEventListener('langchange', applyPageT);
+document.addEventListener('DOMContentLoaded', () => { applyPageT(); renderTools(); });
+</script>
+</body>
+</html>

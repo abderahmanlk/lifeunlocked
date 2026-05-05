@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Visa Checker — LifeUnlocked</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.vc-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:28px}
+.vc{background:#fff;border:1.5px solid var(--b1);border-radius:14px;padding:14px;text-align:center;cursor:pointer;transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.vc:hover,.vc.on{border-color:var(--or);background:var(--or4);box-shadow:0 4px 16px rgba(255,107,53,.15)}
+.vc-flag{font-size:28px;margin-bottom:6px}.vc-name{font-size:13px;font-weight:600;color:var(--tx)}
+.vr{background:#fff;border:1px solid var(--b1);border-radius:20px;padding:28px;margin-top:24px;display:none;box-shadow:0 4px 16px rgba(0,0,0,.06)}
+.vr.show{display:block}
+.vr-title{font-family:'Syne',sans-serif;font-size:20px;font-weight:800;color:var(--tx);margin-bottom:4px;letter-spacing:-.4px}
+.vr-sub{font-size:13px;color:var(--mu);margin-bottom:20px}
+.vdg{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px}
+.vdc{background:var(--bg2);border-radius:14px;padding:18px;border:1px solid var(--b1)}
+.vdc-name{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--tx);margin-bottom:12px;letter-spacing:-.3px}
+.vr-row{display:flex;justify-content:space-between;align-items:flex-start;font-size:13px;padding:7px 0;border-bottom:1px solid var(--b1)}
+.vr-row:last-child{border:none;padding-bottom:0}
+.vr-l{color:var(--mu);font-weight:500;min-width:110px}.vr-r{color:var(--tx);font-weight:600;text-align:right;max-width:60%;font-size:12px}
+.vr-note{margin-top:20px;padding:14px 18px;background:rgba(124,58,237,.06);border:1px solid rgba(124,58,237,.12);border-radius:12px;font-size:13px;color:var(--mu);line-height:1.65}
+.info-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:40px}
+.info-card{background:#fff;border:1px solid var(--b1);border-radius:16px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.info-ico{font-size:28px;margin-bottom:12px}
+.info-title{font-family:'Syne',sans-serif;font-size:15px;font-weight:800;color:var(--tx);margin-bottom:6px;letter-spacing:-.3px}
+.info-desc{font-size:13px;color:var(--mu);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="auth-overlay" id="auth-overlay"><div class="auth-box" id="auth-box"><div class="auth-header"><div class="auth-logo">🔓 <strong>Life</strong><span style="color:var(--or)">Unlocked</span></div><button class="auth-close" onclick="closeAuth()">✕</button></div><div class="auth-tabs"><button class="auth-tab active" id="tab-signin" onclick="switchTab('signin')" data-i18n="auth_signin">Sign In</button><button class="auth-tab" id="tab-signup" onclick="switchTab('signup')" data-i18n="auth_signup">Create Account</button></div><div id="auth-form-area"></div></div></div>
+
+<nav id="main-nav">
+  <div class="nav-logo" onclick="window.location='index.html'"><div class="nav-logo-mark">🔓</div><div><span class="nav-life">Life</span><span class="nav-ul">Unlocked</span></div></div>
+  <div class="nav-links">
+    <a href="program.html" data-i18n="nav_program">Program</a>
+    <a href="destinations.html" data-i18n="nav_destinations">Destinations</a>
+    <a href="income.html" data-i18n="nav_income">Income & AI</a>
+    <a href="visa.html" class="active" data-i18n="nav_visa">Visa</a>
+    <a href="support.html" data-i18n="nav_support">Support</a>
+    <a href="index.html#pricing" data-i18n="nav_pricing">Pricing</a>
+  </div>
+  <div class="nav-right">
+    <div class="nav-search-btn" onclick="toggleSearch()">🔍 <span data-i18n="nav_search">Search...</span></div>
+    <button class="nav-login-btn" onclick="openAuth('signin')" id="nav-login-btn" data-i18n="nav_login">Log in</button>
+    <button class="nav-cta-btn" onclick="window.location='index.html#quiz'" data-i18n="nav_cta">Start Free →</button>
+  </div>
+  <button class="nav-mobile-menu" onclick="toggleMobileNav()">☰</button>
+</nav>
+
+<div class="mobile-nav" id="mobile-nav"><a href="program.html">📋 Program</a><a href="destinations.html">🌍 Destinations</a><a href="income.html">💰 Income & AI</a><a href="visa.html">📋 Visa</a><a href="support.html">💬 Support</a><a href="index.html#pricing">💎 Pricing</a></div>
+<div class="search-bar-wrap" id="search-bar-wrap"><div class="search-bar-inner"><span>🔍</span><input class="search-bar-input" id="search-input" placeholder="Search..." oninput="runSearch(this.value)" onkeydown="if(event.key==='Escape')toggleSearch()"><button onclick="toggleSearch()" style="background:none;border:none;cursor:pointer;color:var(--mu);font-size:16px">✕</button></div><div class="search-results" id="search-results"></div></div>
+
+<div class="page-hero-rich">
+  <div class="page-hero-inner">
+    <div class="page-hero-label" id="ph-label">📋 Visa Checker</div>
+    <h1 class="page-hero-h1" id="ph-title">Your <span class="grad-go">exact</span> visa requirements</h1>
+    <p class="page-hero-sub" id="ph-sub">Select your passport below to see exactly what you need for each destination — documents, minimum funds, processing time, and step-by-step procedure. Updated for 2025/2026.</p>
+  </div>
+</div>
+
+<div class="section-wrap alt">
+<div class="section" style="max-width:960px">
+<div class="sec-tag st-go"><div class="sec-tag-dot"></div><span class="sec-tag-txt" id="sel-label">Select Your Passport</span></div>
+<div class="vc-grid" id="vc-grid"></div>
+<div class="vr" id="vr">
+  <div class="vr-title" id="vr-t"></div>
+  <div class="vr-sub" id="vr-s"></div>
+  <div class="vdg" id="vdg"></div>
+  <div class="vr-note" id="vr-note"></div>
+</div>
+
+<div class="section-wrap" style="padding:40px 0 0">
+<div class="sec-tag st-or"><div class="sec-tag-dot"></div><span class="sec-tag-txt" id="tips-label">Good to Know</span></div>
+<h2 class="sec-heading" id="tips-h">Visa tips & <span class="grad-or">important info</span></h2>
+<div class="info-cards" id="info-cards"></div>
+</div>
+</div>
+</div>
+
+<footer class="main-footer">
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div><div class="footer-logo">🔓 <span style="color:rgba(255,255,255,.85)">Life</span><span style="color:var(--or)">Unlocked</span></div><div class="footer-tagline">Earn online. Live anywhere.<br>lifeunlocked.app</div></div>
+      <div><div class="footer-col-title" data-i18n="ft_platform">Platform</div><div class="footer-links"><a href="program.html" data-i18n="nav_program">Program</a><a href="destinations.html" data-i18n="nav_destinations">Destinations</a><a href="income.html" data-i18n="nav_income">Income & AI</a><a href="visa.html" data-i18n="nav_visa">Visa</a><a href="support.html" data-i18n="nav_support">Support</a></div></div>
+      <div><div class="footer-col-title" data-i18n="ft_plans">Plans</div><div class="footer-links"><a href="index.html#pricing">Free</a><a href="index.html#pricing">Pro $9.99/mo</a><a href="index.html#pricing">VIP $149</a></div></div>
+      <div><div class="footer-col-title" data-i18n="ft_legal">Legal</div><div class="footer-links"><a href="#" data-i18n="ft_privacy">Privacy</a><a href="#" data-i18n="ft_terms">Terms</a><a href="support.html" data-i18n="ft_help">Help</a></div></div>
+    </div>
+    <div class="footer-bottom"><span>© 2025 LifeUnlocked</span><span>EN · FR · AR · ES · TR · HI · PT · ID</span></div>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+const PT = {
+  en:{label:'📋 Visa Checker',title:'Your <span class="grad-go">exact</span> visa requirements',sub:'Select your passport below to see exactly what you need for each destination — documents, funds, timing, and procedure. Updated for 2025/2026.',sel:'Select Your Passport',tips:'Good to Know',tipsH:'Visa tips & <span class="grad-or">important info</span>',resTitle:'Your Visa Options',resSub:'Best destinations for your passport:',rowVisa:'Visa type',rowFunds:'Min. funds',rowDocs:'Documents',rowProc:'Processing',rowDiff:'Difficulty',difEasy:'Easy ✓',difMd:'Moderate ⚠️',difHd:'Complex',note:'<strong style="color:var(--pu)">⚠️ Important:</strong> These guidelines are current as of 2025/2026. Always verify at the official embassy website. <strong>LifeUnlocked Pro includes real-time alerts</strong> when visa rules change.',
+   tip1t:'Apply 3–4 months early',tip1d:'Most visas take 2–6 weeks. Apply early and check processing times at the official embassy.',
+   tip2t:'Show sufficient funds',tip2d:'Every visa requires proof of financial stability. Have 3 months of bank statements ready.',
+   tip3t:'DTV Soft Power tip',tip3d:'For Thailand DTV, enroll in a certified cooking school for 6+ months. Get the official acceptance letter.',
+   tip4t:'Georgia — easiest start',tip4d:'For most African/Middle Eastern passports, Georgia is visa-free 1 year. Perfect first step.',
+   tip5t:'Rules change often',tip5d:'Visa rules change frequently. Always verify at the official embassy. Pro sends you alerts.',
+   tip6t:'Digital Nomad proof',tip6d:'Some visas require remote work proof. Freelance invoices, Fiverr/Upwork screenshots, contracts all count.'},
+  fr:{label:'📋 Vérificateur Visa',title:'Tes <span class="grad-go">exigences exactes</span> de visa',sub:'Sélectionne ton passeport ci-dessous pour voir exactement ce qu\'il te faut — documents, fonds, délais et procédure. Mis à jour 2025/2026.',sel:'Sélectionne ton passeport',tips:'À savoir',tipsH:'Conseils visa & <span class="grad-or">infos importantes</span>',resTitle:'Tes options de visa',resSub:'Meilleures destinations pour ton passeport :',rowVisa:'Type de visa',rowFunds:'Fonds min.',rowDocs:'Documents',rowProc:'Traitement',rowDiff:'Difficulté',difEasy:'Facile ✓',difMd:'Modéré ⚠️',difHd:'Complexe',note:'<strong style="color:var(--pu)">⚠️ Important :</strong> Directives à jour 2025/2026. Toujours vérifier sur le site officiel. <strong>LifeUnlocked Pro inclut des alertes en temps réel</strong> quand les règles changent.',
+   tip1t:'Demande 3–4 mois avant',tip1d:'La plupart des visas prennent 2–6 semaines. Demande tôt et vérifie les délais à l\'ambassade.',
+   tip2t:'Montre des fonds suffisants',tip2d:'Chaque visa exige une preuve financière. Aie 3 mois de relevés bancaires prêts.',
+   tip3t:'Astuce DTV',tip3d:'Pour la DTV Thaïlande, inscris-toi en école de cuisine 6+ mois. Obtiens la lettre officielle.',
+   tip4t:'Géorgie — départ le plus facile',tip4d:'Pour la plupart des passeports africains/moyen-orientaux, la Géorgie est sans visa 1 an. Première étape parfaite.',
+   tip5t:'Les règles changent souvent',tip5d:'Les règles changent fréquemment. Vérifie toujours à l\'ambassade. Pro envoie des alertes.',
+   tip6t:'Preuve nomade digital',tip6d:'Certains visas exigent une preuve de travail à distance. Factures, captures Fiverr/Upwork, contrats comptent.'},
+  ar:{label:'📋 فاحص التأشيرة',title:'متطلبات <span class="grad-go">التأشيرة الدقيقة</span> الخاصة بك',sub:'اختر جواز سفرك أدناه لرؤية ما تحتاجه بالضبط — المستندات، الأموال، التوقيت، والإجراءات. محدث 2025/2026.',sel:'اختر جواز سفرك',tips:'من الجيد معرفته',tipsH:'نصائح التأشيرة & <span class="grad-or">معلومات مهمة</span>',resTitle:'خيارات التأشيرة الخاصة بك',resSub:'أفضل الوجهات لجواز سفرك:',rowVisa:'نوع التأشيرة',rowFunds:'الحد الأدنى من الأموال',rowDocs:'المستندات',rowProc:'المعالجة',rowDiff:'الصعوبة',difEasy:'سهل ✓',difMd:'متوسط ⚠️',difHd:'معقد',note:'<strong style="color:var(--pu)">⚠️ مهم:</strong> هذه الإرشادات محدثة لعام 2025/2026. تحقق دائمًا من الموقع الرسمي للسفارة. <strong>LifeUnlocked Pro يتضمن تنبيهات</strong> عند تغيير القواعد.',
+   tip1t:'تقدم قبل 3–4 أشهر',tip1d:'معظم التأشيرات تستغرق 2–6 أسابيع. تقدم مبكرًا وتحقق من أوقات المعالجة في السفارة.',
+   tip2t:'أظهر أموالًا كافية',tip2d:'كل تأشيرة تتطلب إثباتًا ماليًا. احتفظ بكشوف حسابك المصرفي لـ 3 أشهر.',
+   tip3t:'نصيحة DTV',tip3d:'لـ DTV التايلاندية، سجل في مدرسة طبخ معتمدة لـ 6+ أشهر. احصل على خطاب القبول الرسمي.',
+   tip4t:'جورجيا — أسهل بداية',tip4d:'لمعظم الجوازات الإفريقية/الشرق الأوسطية، جورجيا بدون تأشيرة سنة واحدة. خطوة أولى مثالية.',
+   tip5t:'القواعد تتغير كثيرًا',tip5d:'تتغير قواعد التأشيرة باستمرار. تحقق دائمًا من السفارة. Pro يرسل تنبيهات.',
+   tip6t:'إثبات العمل عن بُعد',tip6d:'تتطلب بعض التأشيرات إثبات العمل عن بُعد. الفواتير، لقطات Fiverr/Upwork، العقود كلها تحسب.'},
+  es:{label:'📋 Verificador de Visa',title:'Tus <span class="grad-go">requisitos exactos</span> de visa',sub:'Selecciona tu pasaporte para ver exactamente lo que necesitas — documentos, fondos, tiempo y procedimiento. Actualizado 2025/2026.',sel:'Selecciona tu pasaporte',tips:'Bueno saber',tipsH:'Consejos visa & <span class="grad-or">información importante</span>',resTitle:'Tus opciones de visa',resSub:'Mejores destinos para tu pasaporte:',rowVisa:'Tipo de visa',rowFunds:'Fondos mín.',rowDocs:'Documentos',rowProc:'Procesamiento',rowDiff:'Dificultad',difEasy:'Fácil ✓',difMd:'Moderado ⚠️',difHd:'Complejo',note:'<strong style="color:var(--pu)">⚠️ Importante:</strong> Pautas actualizadas 2025/2026. Verifica siempre en la embajada oficial. <strong>Pro incluye alertas en tiempo real</strong>.',
+   tip1t:'Aplica 3–4 meses antes',tip1d:'Las visas tardan 2–6 semanas. Aplica temprano y verifica tiempos en la embajada.',
+   tip2t:'Muestra fondos suficientes',tip2d:'Cada visa requiere prueba financiera. Ten 3 meses de extractos bancarios.',
+   tip3t:'Consejo DTV',tip3d:'Para DTV Tailandia, inscríbete en escuela de cocina 6+ meses. Carta oficial requerida.',
+   tip4t:'Georgia — el inicio más fácil',tip4d:'Para pasaportes africanos/mediorientales, Georgia sin visa 1 año. Primer paso perfecto.',
+   tip5t:'Las reglas cambian',tip5d:'Las reglas cambian frecuentemente. Verifica en la embajada. Pro envía alertas.',
+   tip6t:'Prueba nómada digital',tip6d:'Algunas visas requieren prueba de trabajo remoto. Facturas, Fiverr/Upwork, contratos cuentan.'},
+  tr:{label:'📋 Vize Kontrolü',title:'<span class="grad-go">Tam vize</span> gereksinimleriniz',sub:'Pasaportunuzu seçin — belgeler, fonlar, süre ve prosedür. 2025/2026 için güncel.',sel:'Pasaportunuzu Seçin',tips:'Bilmek İyi',tipsH:'Vize ipuçları & <span class="grad-or">önemli bilgi</span>',resTitle:'Vize seçenekleriniz',resSub:'Pasaportunuz için en iyi destinasyonlar:',rowVisa:'Vize türü',rowFunds:'Min. fon',rowDocs:'Belgeler',rowProc:'İşleme',rowDiff:'Zorluk',difEasy:'Kolay ✓',difMd:'Orta ⚠️',difHd:'Karmaşık',note:'<strong style="color:var(--pu)">⚠️ Önemli:</strong> Yönergeler 2025/2026. Resmi konsoloslukta doğrulayın. <strong>Pro gerçek zamanlı uyarılar içerir</strong>.',
+   tip1t:'3–4 ay önce başvurun',tip1d:'Çoğu vize 2–6 hafta sürer. Erken başvurun.',
+   tip2t:'Yeterli fon gösterin',tip2d:'Her vize finansal kanıt gerektirir. 3 ay banka ekstresi.',
+   tip3t:'DTV ipucu',tip3d:'Tayland DTV için onaylı yemek okuluna kaydolun 6+ ay.',
+   tip4t:'Gürcistan — en kolay başlangıç',tip4d:'Çoğu Afrika/Orta Doğu pasaportu için Gürcistan vizesiz 1 yıl.',
+   tip5t:'Kurallar değişir',tip5d:'Vize kuralları sık değişir. Konsoloslukta doğrulayın.',
+   tip6t:'Uzaktan çalışma kanıtı',tip6d:'Bazı vizeler uzaktan çalışma kanıtı gerektirir.'},
+  hi:{label:'📋 वीजा जांचकर्ता',title:'आपकी <span class="grad-go">सटीक वीजा</span> आवश्यकताएं',sub:'अपना पासपोर्ट चुनें — दस्तावेज, धन, समय और प्रक्रिया। 2025/2026 के लिए अपडेट।',sel:'अपना पासपोर्ट चुनें',tips:'जानना अच्छा',tipsH:'वीजा टिप्स & <span class="grad-or">महत्वपूर्ण जानकारी</span>',resTitle:'आपके वीजा विकल्प',resSub:'आपके पासपोर्ट के लिए सर्वश्रेष्ठ गंतव्य:',rowVisa:'वीजा प्रकार',rowFunds:'न्यूनतम धन',rowDocs:'दस्तावेज',rowProc:'प्रक्रिया',rowDiff:'कठिनाई',difEasy:'आसान ✓',difMd:'मध्यम ⚠️',difHd:'जटिल',note:'<strong style="color:var(--pu)">⚠️ महत्वपूर्ण:</strong> दिशानिर्देश 2025/2026 के लिए वर्तमान। हमेशा आधिकारिक दूतावास पर सत्यापित करें।',
+   tip1t:'3–4 महीने पहले आवेदन करें',tip1d:'अधिकांश वीजा 2–6 सप्ताह लेते हैं।',
+   tip2t:'पर्याप्त धन दिखाएं',tip2d:'हर वीजा वित्तीय प्रमाण मांगता है। 3 महीने के बैंक स्टेटमेंट।',
+   tip3t:'DTV टिप',tip3d:'थाईलैंड DTV के लिए, प्रमाणित कुकिंग स्कूल में 6+ महीने नामांकन।',
+   tip4t:'जॉर्जिया — सबसे आसान शुरुआत',tip4d:'अधिकांश अफ्रीकी/मध्य पूर्वी पासपोर्ट के लिए, जॉर्जिया 1 साल वीजा-मुक्त।',
+   tip5t:'नियम बदलते हैं',tip5d:'वीजा नियम अक्सर बदलते हैं। हमेशा सत्यापित करें।',
+   tip6t:'डिजिटल नोमैड प्रमाण',tip6d:'कुछ वीजा रिमोट वर्क प्रमाण की आवश्यकता होती है।'},
+  pt:{label:'📋 Verificador de Visto',title:'Seus <span class="grad-go">requisitos exatos</span> de visto',sub:'Selecione seu passaporte — documentos, fundos, tempo e procedimento. Atualizado 2025/2026.',sel:'Selecione seu passaporte',tips:'Bom Saber',tipsH:'Dicas de visto & <span class="grad-or">informações importantes</span>',resTitle:'Suas opções de visto',resSub:'Melhores destinos para seu passaporte:',rowVisa:'Tipo de visto',rowFunds:'Fundos mín.',rowDocs:'Documentos',rowProc:'Processamento',rowDiff:'Dificuldade',difEasy:'Fácil ✓',difMd:'Moderado ⚠️',difHd:'Complexo',note:'<strong style="color:var(--pu)">⚠️ Importante:</strong> Diretrizes atualizadas 2025/2026. Verifique sempre na embaixada.',
+   tip1t:'Aplique 3–4 meses antes',tip1d:'A maioria dos vistos leva 2–6 semanas.',
+   tip2t:'Mostre fundos suficientes',tip2d:'Todo visto exige prova financeira. Tenha 3 meses de extratos.',
+   tip3t:'Dica DTV',tip3d:'Para DTV Tailândia, matricule-se em escola de culinária 6+ meses.',
+   tip4t:'Geórgia — início mais fácil',tip4d:'Para passaportes africanos/orientais, Geórgia sem visto 1 ano.',
+   tip5t:'Regras mudam',tip5d:'Regras de visto mudam frequentemente. Verifique sempre.',
+   tip6t:'Prova nômade digital',tip6d:'Alguns vistos exigem prova de trabalho remoto.'},
+  id:{label:'📋 Pemeriksa Visa',title:'Persyaratan <span class="grad-go">visa tepat</span> Anda',sub:'Pilih paspor Anda — dokumen, dana, waktu dan prosedur. Diperbarui 2025/2026.',sel:'Pilih Paspor Anda',tips:'Baik Diketahui',tipsH:'Tips visa & <span class="grad-or">informasi penting</span>',resTitle:'Pilihan visa Anda',resSub:'Destinasi terbaik untuk paspor Anda:',rowVisa:'Jenis visa',rowFunds:'Dana min.',rowDocs:'Dokumen',rowProc:'Pemrosesan',rowDiff:'Kesulitan',difEasy:'Mudah ✓',difMd:'Sedang ⚠️',difHd:'Kompleks',note:'<strong style="color:var(--pu)">⚠️ Penting:</strong> Pedoman terbaru 2025/2026. Selalu verifikasi di kedutaan resmi.',
+   tip1t:'Ajukan 3–4 bulan lebih awal',tip1d:'Sebagian besar visa membutuhkan 2–6 minggu.',
+   tip2t:'Tunjukkan dana yang cukup',tip2d:'Setiap visa membutuhkan bukti keuangan. Siapkan 3 bulan rekening.',
+   tip3t:'Tip DTV',tip3d:'Untuk DTV Thailand, daftar di sekolah memasak bersertifikat 6+ bulan.',
+   tip4t:'Georgia — awal termudah',tip4d:'Untuk sebagian besar paspor Afrika/Timur Tengah, Georgia bebas visa 1 tahun.',
+   tip5t:'Aturan sering berubah',tip5d:'Aturan visa sering berubah. Selalu verifikasi.',
+   tip6t:'Bukti nomad digital',tip6d:'Beberapa visa memerlukan bukti kerja jarak jauh.'},
+};
+
+const VD = {
+  '🇲🇦 Morocco':{name:'Morocco',rank:'~100',ds:[
+    {n:'🇹🇭 Thailand',tp:'DTV Soft Power',am:'500,000 THB (~$14,000)',dc:'Bank statement 3mo · Cooking school letter (6+ mo) · Passport',tm:'2–3 weeks',df:'md'},
+    {n:'🇮🇩 Bali',tp:'Tourist e-Visa',am:'~$2,000',dc:'Passport · Return ticket · Hotel booking',tm:'3–5 days',df:'ok'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free 1 year',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇹🇷 Turkey',tp:'e-Visa required',am:'$3,000+',dc:'Passport · $20 fee',tm:'24–48h',df:'ok'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 90 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'}]},
+  '🇩🇿 Algeria':{name:'Algeria',rank:'~105',ds:[
+    {n:'🇹🇭 Thailand',tp:'DTV Soft Power',am:'500,000 THB',dc:'Bank statement · School letter · Passport',tm:'2–4 weeks',df:'md'},
+    {n:'🇮🇩 Bali',tp:'Visa on Arrival',am:'~$2,000',dc:'Passport · $35 fee',tm:'On arrival',df:'ok'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free 1 year',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇹🇷 Turkey',tp:'e-Visa required',am:'$3,000+',dc:'Passport · $20 fee',tm:'24–48h',df:'ok'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 90 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'}]},
+  '🇪🇬 Egypt':{name:'Egypt',rank:'~95',ds:[
+    {n:'🇹🇭 Thailand',tp:'DTV Soft Power',am:'500,000 THB',dc:'Bank statement · School letter · Passport',tm:'2–4 weeks',df:'md'},
+    {n:'🇮🇩 Bali',tp:'Visa on Arrival',am:'~$2,000',dc:'Passport · $35 fee',tm:'On arrival',df:'ok'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free 365 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇹🇷 Turkey',tp:'e-Visa required',am:'$3,000+',dc:'Passport · $20 fee',tm:'24–48h',df:'ok'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 90 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'}]},
+  '🇹🇳 Tunisia':{name:'Tunisia',rank:'~85',ds:[
+    {n:'🇹🇭 Thailand',tp:'DTV Soft Power',am:'500,000 THB',dc:'Bank statement · School letter · Passport',tm:'2–4 weeks',df:'md'},
+    {n:'🇮🇩 Bali',tp:'Visa on Arrival',am:'~$2,000',dc:'Passport · $35 fee',tm:'On arrival',df:'ok'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free 1 year',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇹🇷 Turkey',tp:'Visa-Free 90 days',am:'$2,000+',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 90 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'}]},
+  '🇹🇷 Turkey':{name:'Turkey',rank:'~52',ds:[
+    {n:'🇹🇭 Thailand',tp:'Visa-Free 30 days',am:'~$3,000',dc:'Passport · Return ticket · Hotel',tm:'On arrival',df:'ok'},
+    {n:'🇮🇩 Bali',tp:'Visa on Arrival',am:'~$2,000',dc:'Passport · $35 fee',tm:'On arrival',df:'ok'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇵🇹 Portugal',tp:'D8 Digital Nomad',am:'€2,836/mo',dc:'NIF · Bank statements · Contract · Insurance',tm:'2–4 months',df:'hd'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 90 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'}]},
+  '🇮🇳 India':{name:'India',rank:'~80',ds:[
+    {n:'🇹🇭 Thailand',tp:'Tourist Visa',am:'~$3,000',dc:'Passport · Bank statement · Accommodation · Return ticket',tm:'1–2 weeks',df:'md'},
+    {n:'🇮🇩 Bali',tp:'Visa on Arrival',am:'~$2,000',dc:'Passport · $35 fee',tm:'On arrival',df:'ok'},
+    {n:'🇬🇪 Georgia',tp:'e-Visa',am:'~$2,000',dc:'Passport · Online application',tm:'5–7 days',df:'ok'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 30 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇻🇳 Vietnam',tp:'e-Visa 90 days',am:'~$2,000',dc:'Passport · $25 fee',tm:'3–5 days',df:'ok'}]},
+  '🇮🇩 Indonesia':{name:'Indonesia',rank:'~70',ds:[
+    {n:'🇹🇭 Thailand',tp:'Visa-Free 30 days',am:'~$2,000',dc:'Passport · Return ticket',tm:'On arrival',df:'ok'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 30 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇻🇳 Vietnam',tp:'e-Visa 90 days',am:'~$2,000',dc:'Passport · $25 fee online',tm:'3–5 days',df:'ok'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇯🇵 Japan',tp:'Tourist Visa',am:'~$3,000',dc:'Passport · Bank statement · Itinerary',tm:'1–2 weeks',df:'md'}]},
+  '🇧🇷 Brazil':{name:'Brazil',rank:'~62',ds:[
+    {n:'🇹🇭 Thailand',tp:'Visa-Free 30 days',am:'~$3,000',dc:'Passport · Return ticket',tm:'On arrival',df:'ok'},
+    {n:'🇮🇩 Bali',tp:'Visa on Arrival',am:'~$2,000',dc:'Passport · $35 fee',tm:'On arrival',df:'ok'},
+    {n:'🇵🇹 Portugal',tp:'D8 Digital Nomad',am:'€2,836/mo',dc:'NIF · Bank · Contract',tm:'2–4 months',df:'hd'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free 365 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇻🇳 Vietnam',tp:'e-Visa 90 days',am:'~$2,000',dc:'Passport · $25 fee',tm:'3–5 days',df:'ok'}]},
+  '🇳🇬 Nigeria':{name:'Nigeria',rank:'~95',ds:[
+    {n:'🇹🇭 Thailand',tp:'DTV Soft Power',am:'500,000 THB',dc:'Bank statement · School letter · Passport',tm:'3–5 weeks',df:'md'},
+    {n:'🇬🇪 Georgia',tp:'Visa-Free 1 year',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇹🇷 Turkey',tp:'e-Visa required',am:'$3,000+',dc:'Passport · $20 fee',tm:'24–48h',df:'ok'},
+    {n:'🇲🇾 Malaysia',tp:'Visa-Free 30 days',am:'~$2,000',dc:'Passport only',tm:'On arrival',df:'ok'},
+    {n:'🇻🇳 Vietnam',tp:'e-Visa 90 days',am:'~$2,000',dc:'Passport · $25 fee',tm:'3–5 days',df:'ok'}]},
+};
+
+let currentPassport = null;
+function getT(){return PT[i18n.current] || PT.en;}
+
+function applyPageT(){
+  const t = getT();
+  document.getElementById('ph-label').textContent = t.label;
+  document.getElementById('ph-title').innerHTML = t.title;
+  document.getElementById('ph-sub').textContent = t.sub;
+  document.getElementById('sel-label').textContent = t.sel;
+  document.getElementById('tips-label').textContent = t.tips;
+  document.getElementById('tips-h').innerHTML = t.tipsH;
+  renderInfoCards();
+  if(currentPassport) showVisa(currentPassport);
+}
+
+function renderInfoCards(){
+  const t = getT();
+  const cards = [
+    {i:'⏰',title:t.tip1t,desc:t.tip1d},
+    {i:'💰',title:t.tip2t,desc:t.tip2d},
+    {i:'🏫',title:t.tip3t,desc:t.tip3d},
+    {i:'🇬🇪',title:t.tip4t,desc:t.tip4d},
+    {i:'⚠️',title:t.tip5t,desc:t.tip5d},
+    {i:'💼',title:t.tip6t,desc:t.tip6d},
+  ];
+  document.getElementById('info-cards').innerHTML = cards.map(c => `
+    <div class="info-card"><div class="info-ico">${c.i}</div><div class="info-title">${c.title}</div><div class="info-desc">${c.desc}</div></div>`).join('');
+}
+
+window.addEventListener('langchange', applyPageT);
+
+document.getElementById('vc-grid').innerHTML = Object.keys(VD).map(c => `<div class="vc" onclick="showVisa('${c}',this)"><div class="vc-flag">${c.split(' ')[0]}</div><div class="vc-name">${c.split(' ').slice(1).join(' ')}</div></div>`).join('');
+
+function showVisa(c, btn){
+  currentPassport = c;
+  document.querySelectorAll('.vc').forEach(e => e.classList.remove('on'));
+  if(btn) btn.classList.add('on');
+  else { const found = Array.from(document.querySelectorAll('.vc')).find(el => el.textContent.includes(c.split(' ').slice(1).join(' '))); if(found) found.classList.add('on'); }
+  const t = getT();
+  const d = VD[c];
+  const dfC = {ok:'var(--te)',md:'var(--or)',hd:'var(--pk)'};
+  const dfT = {ok:t.difEasy,md:t.difMd,hd:t.difHd};
+  document.getElementById('vr-t').textContent = c + ' — ' + t.resTitle;
+  document.getElementById('vr-s').textContent = 'Passport rank: ' + d.rank + '. ' + t.resSub;
+  document.getElementById('vdg').innerHTML = d.ds.map(ds => `
+    <div class="vdc">
+      <div class="vdc-name">${ds.n}</div>
+      <div class="vr-row"><span class="vr-l">${t.rowVisa}</span><span class="vr-r">${ds.tp}</span></div>
+      <div class="vr-row"><span class="vr-l">${t.rowFunds}</span><span class="vr-r" style="color:var(--or)">${ds.am}</span></div>
+      <div class="vr-row"><span class="vr-l">${t.rowDocs}</span><span class="vr-r">${ds.dc}</span></div>
+      <div class="vr-row"><span class="vr-l">${t.rowProc}</span><span class="vr-r">${ds.tm}</span></div>
+      <div class="vr-row"><span class="vr-l">${t.rowDiff}</span><span class="vr-r" style="color:${dfC[ds.df]}">${dfT[ds.df]}</span></div>
+    </div>`).join('');
+  document.getElementById('vr-note').innerHTML = t.note;
+  document.getElementById('vr').classList.add('show');
+  document.getElementById('vr').scrollIntoView({behavior:'smooth',block:'start'});
+}
+window.showVisa = showVisa;
+
+document.addEventListener('DOMContentLoaded', applyPageT);
+</script>
+</body>
+</html>
